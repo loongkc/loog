@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-skin="warm">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="referrer" content="no-referrer">
+<title>Loog · 私人日记</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@400;600&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>
+tailwind.config = {
+  theme: { extend: {
+    colors: {
+      paper: 'rgb(var(--paper) / <alpha-value>)', card: 'rgb(var(--card) / <alpha-value>)',
+      ink: 'rgb(var(--ink) / <alpha-value>)', sage: 'rgb(var(--sage) / <alpha-value>)',
+      rose: 'rgb(var(--rose) / <alpha-value>)', sand: 'rgb(var(--sand) / <alpha-value>)',
+      mist: 'rgb(var(--mist) / <alpha-value>)', clay: 'rgb(var(--clay) / <alpha-value>)',
+      plum: 'rgb(var(--plum) / <alpha-value>)', line: 'rgb(var(--line) / <alpha-value>)'
+    },
+    fontFamily: {
+      sans: ['"Noto Sans SC"', 'system-ui', '-apple-system', '"PingFang SC"', '"Microsoft YaHei"', 'sans-serif'],
+      hand: ['"Noto Serif SC"', '"Songti SC"', 'STSong', 'serif'],
+      brand: ['"Ma Shan Zheng"', '"Noto Serif SC"', 'cursive']
+    }
+  } }
+}
+</script>
+<style>
+:root{--paper:241 236 227;--card:251 248 242;--ink:78 70 64;--sage:138 158 142;--rose:194 148 142;--sand:209 190 158;--mist:143 160 175;--clay:176 138 116;--plum:158 138 160;--line:224 216 202}
+[data-skin=mist]{--paper:232 236 240;--card:246 248 250;--ink:60 68 78;--sage:128 156 150;--rose:190 150 160;--sand:200 192 170;--mist:120 145 170;--clay:140 130 150;--plum:150 140 170;--line:210 216 224}
+[data-skin=sage]{--paper:234 238 229;--card:247 249 244;--ink:62 72 62;--sage:120 150 120;--rose:190 152 140;--sand:205 195 160;--mist:140 160 165;--clay:160 138 108;--plum:150 140 150;--line:214 222 208}
+[data-skin=night]{--paper:38 36 40;--card:50 47 52;--ink:232 226 216;--sage:140 165 145;--rose:200 150 150;--sand:200 180 140;--mist:140 160 185;--clay:190 150 125;--plum:170 150 180;--line:72 68 74}
+html{scroll-behavior:smooth}
+body{background:rgb(var(--paper));color:rgb(var(--ink));font-family:'Noto Sans SC',system-ui,sans-serif;transition:background-color .6s ease,color .6s ease;-webkit-tap-highlight-color:transparent}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.55;
+  background-image:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .3 0 0 0 0 .25 0 0 0 .1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(60rem 40rem at 8% -10%,rgb(var(--rose)/.16),transparent 60%),radial-gradient(50rem 40rem at 100% 10%,rgb(var(--mist)/.16),transparent 60%),radial-gradient(50rem 40rem at 50% 120%,rgb(var(--sage)/.16),transparent 60%)}
+::selection{background:rgb(var(--sand)/.5)}
+::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-thumb{background:rgb(var(--ink)/.18);border-radius:8px}
+@keyframes pageIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes pageOut{to{opacity:0;transform:translateY(-8px)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:none}}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes breathe{0%,100%{caret-color:rgb(var(--clay))}50%{caret-color:rgb(var(--clay)/.08)}}
+@keyframes pop{0%{transform:scale(.92);opacity:0}100%{transform:none;opacity:1}}
+@keyframes wobble{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+@keyframes glow{0%{box-shadow:0 0 0 0 rgb(var(--sage)/.55)}100%{box-shadow:0 0 0 18px rgb(var(--sage)/0)}}
+@keyframes pulse1{0%{transform:scale(1)}40%{transform:scale(1.18)}100%{transform:scale(1)}}
+@keyframes overlayIn{from{opacity:0}to{opacity:1}}
+@keyframes overlayOut{to{opacity:0}}
+@keyframes sheetIn{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes blinkc{50%{opacity:0}}
+@keyframes quotePop{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.page{display:none}
+.page.active{display:block;animation:pageIn .5s cubic-bezier(.2,.8,.2,1) both}
+.page.active.out{animation:pageOut .2s ease forwards}
+.slide-up{animation:slideUp .65s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0)*70ms)}
+.new-card{animation:slideUp .8s cubic-bezier(.2,.8,.2,1) both,glow 1.6s ease-out .6s 1}
+.floaty{animation:floaty 7s ease-in-out infinite}
+.editor{animation:breathe 2.4s ease-in-out infinite;outline:none}
+.paper-lines{line-height:2.25rem;background-image:repeating-linear-gradient(to bottom,transparent 0,transparent calc(2.25rem - 1px),rgb(var(--line)) calc(2.25rem - 1px),rgb(var(--line)) 2.25rem);background-attachment:local}
+.editor img,.stk{display:inline-block;height:56px;width:auto;vertical-align:middle;margin:0 2px}
+.tick{animation:pulse1 .35s ease}
+.chrome-hide{transition:opacity .5s ease,max-height .6s ease,margin .6s ease,transform .6s ease;max-height:40rem}
+.focus-mode .chrome-hide{opacity:0;max-height:0;overflow:hidden;margin:0;pointer-events:none;transform:translateY(-8px)}
+.focus-mode #topbar,.focus-mode #navMob{opacity:0;pointer-events:none;transform:translateY(-100%)}
+.focus-mode #navMob{transform:translateY(100%)}
+.focus-mode .editor{min-height:68vh}
+#topbar,#navMob{transition:opacity .6s ease,transform .6s ease}
+.overlay-in{animation:overlayIn .25s ease both}.overlay-in.out{animation:overlayOut .22s ease forwards}
+.modal-in{animation:sheetIn .4s cubic-bezier(.2,.8,.2,1) both}
+.hm{border-radius:3px;background:rgb(var(--line)/.75);transition:transform .2s,background .3s}
+.hm.l1{background:rgb(var(--sage)/.32)}.hm.l2{background:rgb(var(--sage)/.52)}.hm.l3{background:rgb(var(--sage)/.76)}.hm.l4{background:rgb(var(--sage)/1)}
+.hm.has{cursor:pointer}.hm.has:hover{transform:scale(1.35)}
+.hm.today{outline:1.5px solid rgb(var(--clay));outline-offset:1px}
+.slice{transition:transform .35s ease,opacity .3s;transform-origin:110px 110px;cursor:default}.slice:hover{transform:scale(1.05)}
+.bar-fill{transition:width 1s cubic-bezier(.2,.8,.2,1)}
+.vbar{transition:height .9s cubic-bezier(.2,.8,.2,1)}
+.cap-wobble:hover svg{animation:wobble .6s ease-in-out infinite}
+.type-caret::after{content:'▍';color:rgb(var(--clay));animation:blinkc 1s steps(2) infinite;margin-left:2px;font-weight:400}
+#dailyQuoteFrom{transition:opacity .45s ease}
+.quote-heart{color:rgb(var(--ink)/.32);transition:color .25s ease,transform .25s ease}
+.quote-heart:hover{color:rgb(var(--rose));transform:scale(1.12)}
+.quote-heart:hover svg path{fill:rgb(var(--rose)/.18)}
+.quote-heart.attached{color:rgb(var(--rose))}
+.quote-refresh{color:rgb(var(--ink)/.32);transition:color .3s ease,transform .5s ease;font-size:14px;line-height:1}
+.quote-refresh:hover{color:rgb(var(--sage));transform:rotate(180deg)}
+#wQuote{animation:quotePop .4s cubic-bezier(.2,.8,.2,1) both}
+input[type=color]{-webkit-appearance:none;appearance:none;padding:0;border:none;background:transparent}
+input[type=color]::-webkit-color-swatch-wrapper{padding:0}
+input[type=color]::-webkit-color-swatch{border:1px solid rgb(var(--line));border-radius:8px}
+input[type=color]::-moz-color-swatch{border:1px solid rgb(var(--line));border-radius:8px}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+</style>
+<style type="text/tailwindcss">
+@layer components{
+  .card{@apply rounded-3xl border border-line/80 bg-card/90 shadow-[0_6px_24px_-12px_rgba(80,60,40,.25)] backdrop-blur-sm transition-all duration-500}
+  .card-hover{@apply hover:-translate-y-1 hover:shadow-[0_14px_34px_-14px_rgba(80,60,40,.35)] cursor-pointer}
+  .btn{@apply inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 active:scale-95 select-none}
+  .btn-primary{@apply bg-clay text-white}
+  .btn-sage{@apply bg-sage text-white}
+  .btn-ghost{@apply bg-ink/5 text-ink hover:bg-ink/10}
+  .btn-danger{@apply bg-rose text-white}
+  .chip{@apply inline-flex items-center gap-1 rounded-full border border-line px-3 py-1 text-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-sage cursor-pointer select-none}
+  .chip[aria-pressed=true]{@apply bg-sage/25 border-sage}
+  .field{@apply rounded-2xl border border-line bg-paper/60 px-3 py-2 text-sm outline-none transition-all duration-300 focus:border-sage focus:ring-2 focus:ring-sage/25 text-ink placeholder:text-ink/35}
+  .tbtn{@apply grid h-9 w-9 place-items-center rounded-xl text-base transition-all duration-200 hover:bg-ink/10 active:scale-90}
+  .tbtn.on{@apply bg-sage/30}
+  .h2{@apply text-lg font-bold tracking-wide}
+  .sub{@apply text-xs text-ink/55}
+}
+</style>
+</head>
+<body class="min-h-screen antialiased">
+<div id="app" class="relative z-10 min-h-screen">
+  <header id="topbar" class="sticky top-0 z-30 border-b border-line/60 bg-paper/70 backdrop-blur-md">
+    <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
+      <button data-go="home" class="flex items-center gap-2 transition-transform duration-300 hover:scale-105">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="rgb(var(--clay))" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M9 8h6M9 12h4"/></svg>
+        <span class="font-brand text-3xl leading-none">Loog</span><span class="hidden text-xs text-ink/50 sm:inline">私人日记</span>
+      </button>
+      <nav id="navDesk" class="hidden gap-1 md:flex"></nav>
+    </div>
+  </header>
+  <main class="mx-auto max-w-6xl px-4 py-6 pb-28 md:pb-12">
+    <section class="page" id="pg-home"></section>
+    <section class="page" id="pg-write"></section>
+    <section class="page" id="pg-list"></section>
+    <section class="page" id="pg-stats"></section>
+    <section class="page" id="pg-settings"></section>
+  </main>
+  <nav id="navMob" class="fixed inset-x-0 bottom-0 z-30 border-t border-line/70 bg-paper/85 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden"></nav>
+</div>
+<button id="exitFocus" class="btn btn-ghost fixed right-4 top-4 z-50 hidden">退出专注 · Esc</button>
+<div id="toast" class="pointer-events-none fixed left-1/2 top-5 z-[60] -translate-x-1/2 -translate-y-6 rounded-full border border-line bg-card/95 px-5 py-2.5 text-sm opacity-0 shadow-lg backdrop-blur transition-all duration-700"></div>
+<div id="modalRoot"></div>
+<input type="file" id="impFile" accept=".loog" class="hidden">
+
+<!-- ============ .loog 私有容器格式 ============ -->
+<script id="loog-format">
+(function(root){
+'use strict';
+const MAGIC=[0x4C,0x4F,0x4F,0x47,0x7E,0xA5,0x19,0x01],VER=1,HEAD=86,CH=1024,ITER=250000;
+const te=new TextEncoder(),td=new TextDecoder();
+function cyrb(b,seed=0){let h1=0xdeadbeef^seed,h2=0x41c6ce57^seed;for(let i=0;i<b.length;i++){const c=b[i];h1=Math.imul(h1^c,2654435761);h2=Math.imul(h2^c,1597334677);}h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);return[h2>>>0,h1>>>0];}
+function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function concat(...p){let n=0;p.forEach(x=>n+=x.length);const o=new Uint8Array(n);let k=0;p.forEach(x=>{o.set(x,k);k+=x.length;});return o;}
+function sboxFor(salt){const r=mulberry(cyrb(salt,7)[0]);const s=Array.from({length:256},(_,i)=>i);for(let i=255;i>0;i--){const j=Math.floor(r()*(i+1));[s[i],s[j]]=[s[j],s[i]];}const inv=new Array(256);s.forEach((v,i)=>inv[v]=i);return{s,inv};}
+function mask(data,salt,idx,sb,decode){const r=mulberry((cyrb(salt,idx+13)[1]^Math.imul(idx+1,2654435761))>>>0);const out=new Uint8Array(data.length);for(let i=0;i<data.length;i++){const k=(r()*256)|0;out[i]=decode?((sb.inv[data[i]]-k)&255):sb.s[(data[i]+k)&255];}return out;}
+function order(n,salt){const r=mulberry(cyrb(salt,99)[0]);const o=Array.from({length:n},(_,i)=>i);for(let i=n-1;i>0;i--){const j=Math.floor(r()*(i+1));[o[i],o[j]]=[o[j],o[i]];}return o;}
+async function derive(pw,salt){const base=await crypto.subtle.importKey('raw',te.encode(pw),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:ITER,hash:'SHA-256'},base,{name:'AES-GCM',length:256},false,['encrypt','decrypt']);}
+function need(){if(!(root.crypto&&root.crypto.subtle))throw new Error('当前环境不支持 Web Crypto，请使用现代浏览器并通过 https 或本地文件打开');}
+async function seal(obj,pw){
+  need();
+  const salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12));
+  const head=new Uint8Array(HEAD);head.set(MAGIC,0);head[8]=VER;head[9]=0;head.set(salt,10);head.set(iv,26);
+  const key=await derive(pw,salt);
+  const cipher=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv,additionalData:head.slice(0,38)},key,te.encode(JSON.stringify(obj))));
+  const n=Math.ceil(cipher.length/CH),sb=sboxFor(salt),ord=order(n,salt),frames=[];
+  let total=0;
+  for(const i of ord){const raw=cipher.subarray(i*CH,Math.min(cipher.length,(i+1)*CH));const m=mask(raw,salt,i,sb,false);const f=new Uint8Array(6+m.length);const dv=new DataView(f.buffer);dv.setUint32(0,i);dv.setUint16(4,m.length);f.set(m,6);frames.push(f);total+=f.length;}
+  const body=concat(...frames);
+  const hd=new DataView(head.buffer);hd.setUint32(38,n);hd.setUint32(42,cipher.length);
+  const [a,b]=cyrb(concat(head.subarray(0,46),body),0x10091);hd.setUint32(46,a);hd.setUint32(50,b);
+  head.set(new Uint8Array(await crypto.subtle.digest('SHA-256',concat(head.subarray(0,54),body))),54);
+  return concat(head,body);
+}
+async function open(buf,pw){
+  need();
+  const u=new Uint8Array(buf),bad=()=>new Error('不是有效的 .loog 文件，或文件已损坏');
+  if(u.length<HEAD+6)throw bad();
+  for(let i=0;i<8;i++)if(u[i]!==MAGIC[i])throw bad();
+  if(u[8]!==VER)throw new Error('不支持的 .loog 版本');
+  const dv=new DataView(u.buffer,u.byteOffset,u.byteLength);
+  const n=dv.getUint32(38),clen=dv.getUint32(42);
+  if(n!==Math.ceil(clen/CH)||n>(1<<20))throw bad();
+  const body=u.subarray(HEAD);
+  const [a,b]=cyrb(concat(u.subarray(0,46),body),0x10091);
+  if(a!==dv.getUint32(46)||b!==dv.getUint32(50))throw bad();
+  const h2=new Uint8Array(await crypto.subtle.digest('SHA-256',concat(u.subarray(0,54),body)));
+  for(let i=0;i<32;i++)if(h2[i]!==u[54+i])throw bad();
+  const salt=u.slice(10,26),iv=u.slice(26,38),sb=sboxFor(salt),bv=new DataView(body.buffer,body.byteOffset,body.byteLength);
+  const chunks=new Array(n);let pos=0;
+  while(pos<body.length){if(pos+6>body.length)throw bad();const idx=bv.getUint32(pos),len=bv.getUint16(pos+4);if(idx>=n||chunks[idx]||pos+6+len>body.length)throw bad();chunks[idx]=mask(body.subarray(pos+6,pos+6+len),salt,idx,sb,true);pos+=6+len;}
+  for(let i=0;i<n;i++)if(!chunks[i])throw bad();
+  const cipher=concat(...chunks);if(cipher.length!==clen)throw bad();
+  let plain;
+  try{const key=await derive(pw,salt);plain=await crypto.subtle.decrypt({name:'AES-GCM',iv,additionalData:u.slice(0,38)},key,cipher);}
+  catch(e){throw new Error('密码错误，或文件内容已被篡改');}
+  try{return JSON.parse(td.decode(plain));}catch(e){throw bad();}
+}
+root.LoogFormat={seal,open,cyrb,mulberry,MAGIC};
+})(typeof window!=='undefined'?window:globalThis);
+</script>
+
+<script>
+(() => {
+'use strict';
+const LF = window.LoogFormat;
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const te = new TextEncoder(), td = new TextDecoder();
+const pad = n => String(n).padStart(2, '0');
+const ymd = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const parseYmd = s => { const [y,m,d] = s.split('-').map(Number); return new Date(y, m-1, d); };
+const WD = ['日','一','二','三','四','五','六'];
+const cnDate = s => { const d = parseYmd(s); return `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日 周${WD[d.getDay()]}`; };
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6).replace(/[^a-z0-9]/g, 'x');
+const DAY = 86400000;
+const b64e = u8 => { let s = ''; for (let i = 0; i < u8.length; i += 0x8000) s += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000)); return btoa(s); };
+const b64d = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+const hex2 = ([a, b]) => a.toString(16).padStart(8, '0') + b.toString(16).padStart(8, '0');
+
+/* ---------- 常量 ---------- */
+const WEATHER = [['sun','☀️','晴'],['cloud','⛅','多云'],['overcast','☁️','阴'],['rain','🌧️','雨'],['storm','⛈️','雷雨'],['snow','❄️','雪'],['wind','🌬️','风'],['fog','🌫️','雾']];
+const MOODS = [['happy','😊','开心'],['calm','😌','平静'],['love','🥰','幸福'],['excited','🤩','兴奋'],['think','🤔','思考'],['tired','😴','疲惫'],['sad','😢','难过'],['anxious','😰','焦虑'],['angry','😤','烦躁']];
+const WMAP = Object.fromEntries(WEATHER.map(x => [x[0], x])), MMAP = Object.fromEntries(MOODS.map(x => [x[0], x]));
+const EMOJIS = '😀😃😄😁😆😅😂🙂😉😊😇🥰😍😘😋😎🤗🤔😐😴😪😌😔😢😭😤😡😱😰🤒🥳🌸🌷🌻🌿🍀🍃🍂🌙⭐✨🔥💧🌈☕🍵🍰🍎📖✏️💌🎧🎨🏃🌊🐱🐶🦋💛🤍🩵💪🙏👍🎉'.match(/\p{Extended_Pictographic}(?:\uFE0F|\u200D\p{Extended_Pictographic})*/gu);
+const QUOTES = ['慢一点也没关系，今天的你已经很努力了。','把心事写下来，它就不再那么重。','风会停，雨会歇，你只需要好好呼吸。','每一个平凡的日子，都值得被温柔记录。','不必赶路，花开自有时。','今天的小确幸，别忘了替自己收好。','允许自己偶尔停下来，看看天空。','你写下的每个字，都是未来的自己会感谢的礼物。','世界很吵，但纸页永远安静。','温柔地对待自己，像对待一位久别的朋友。','情绪像云，来了又走，你是那片天空。','记录不是为了完美，而是为了真实。','晚安之前，把今天轻轻合上。','一杯热茶，一支笔，就是一个完整的下午。','有些日子很平淡，但平淡里藏着安稳。','先照顾好自己，再去照顾世界。','不用解释，也不用证明，只要如实写下。','月亮不说话，却陪了你整夜。','把烦恼折成纸船，放进今夜的河里。','今天也辛苦了，给自己一个拥抱。','时间会把琐碎酿成回忆里的光。','愿你的字里行间，都有一点点暖意。'];
+const PROMPTS = ['今天，发生了什么让你想记下来的事？','此刻的天空是什么颜色？心里呢？','先深呼吸一下，然后随便写点什么吧……','有什么话，想对今天的自己说？','今天有哪一个瞬间，让你微微笑了？'];
+const SAVED_MSGS = ['已妥善收藏 🌿','今天的心情，已被好好收下 🍃','写下来了，真好 ☕','又一页，轻轻合上 🌙','谢谢你认真记录今天 🌸'];
+const PALETTE = ['#9caf9f','#d3a39a','#d6c3a0','#9fb0c0','#b7a0b8','#c49a80','#a7b8a8','#cdb4b0','#bfc7cf'];
+const SKINS = [['warm','暖纸','#f1ece3'],['mist','雾蓝','#e8ecf0'],['sage','鼠尾草','#eaeee5'],['night','夜读','#262428']];
+const SKIN_VARS = [
+  ['paper','纸张背景','#f1ece3'],
+  ['card','卡片背景','#fbf8f2'],
+  ['ink','文字墨色','#4e4640'],
+  ['sage','点缀·鼠尾草','#8a9e8e'],
+  ['rose','点缀·玫瑰','#c2948e'],
+  ['clay','强调·陶土','#b08a74'],
+  ['line','线条颜色','#e0d8ca']
+];
+const PAGES = [['home','首页','<path d="M3 11l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/>'],['write','书写','<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>'],['list','日记本','<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M9 8h6M9 12h6"/>'],['stats','统计','<path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/>'],['settings','设置','<path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/>']];
+
+function hexToSpace(hex) {
+  const h = String(hex || '').replace('#', '');
+  if (!/^[0-9a-fA-F]{6}$/.test(h)) return '0 0 0';
+  return `${parseInt(h.slice(0,2),16) || 0} ${parseInt(h.slice(2,4),16) || 0} ${parseInt(h.slice(4,6),16) || 0}`;
+}
+function getDefaultCustom() {
+  const out = {};
+  SKIN_VARS.forEach(([k,_,d]) => out[k] = d);
+  return out;
+}
+function customColor(k) {
+  if (S.customSkin && S.customSkin[k]) return S.customSkin[k];
+  const def = getDefaultCustom();
+  return def[k] || '#888888';
+}
+
+/* ---------- 文本 / 净化 ---------- */
+const ALLOWED = new Set(['B','I','STRONG','EM','U','BR','P','DIV','SPAN','IMG','UL','OL','LI']);
+const DROP = new Set(['SCRIPT','STYLE','IFRAME','OBJECT','EMBED','LINK','META','TEMPLATE','NOSCRIPT','SVG','MATH','FORM','INPUT','BUTTON','TEXTAREA','SELECT','AUDIO','VIDEO','CANVAS','BASE']);
+const IMG_RE = /^data:image\/png;base64,[A-Za-z0-9+\/=]{20,260000}$/;
+const BG_STYLE_RE = /^(?:#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|rgba?\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*(?:,\s*(?:0|1|0?\.\d+)\s*)?\))$/;
+function sanitizeNode(html) {
+  const doc = new DOMParser().parseFromString('<!doctype html><body>' + String(html ?? ''), 'text/html');
+  const out = document.createElement('div');
+  (function walk(src, dst) {
+    for (const c of src.childNodes) {
+      if (c.nodeType === 3) dst.appendChild(document.createTextNode(c.nodeValue));
+      else if (c.nodeType === 1) {
+        const t = c.tagName;
+        if (DROP.has(t)) continue;
+        if (t === 'IMG') {
+          const s = c.getAttribute('src') || '';
+          if (!IMG_RE.test(s)) continue;
+          const im = document.createElement('img'); im.setAttribute('src', s); im.setAttribute('alt', '贴纸'); im.className = 'stk'; dst.appendChild(im);
+        } else if (ALLOWED.has(t)) {
+          const el = document.createElement(t.toLowerCase());
+          if (t === 'SPAN') {
+            const style = c.getAttribute('style') || '';
+            const m = style.match(/(?:^|;)\s*background-color\s*:\s*([^;!]+)/i);
+            if (m) {
+              const val = m[1].trim();
+              if (BG_STYLE_RE.test(val)) el.setAttribute('style', 'background-color:' + val);
+            }
+          }
+          dst.appendChild(el); walk(c, el);
+        }
+        else walk(c, dst);
+      }
+    }
+  })(doc.body, out);
+  return out;
+}
+const sanitize = html => sanitizeNode(html).innerHTML;
+function htmlToText(html) {
+  const root = sanitizeNode(html); let out = '';
+  (function walk(n) {
+    for (const c of n.childNodes) {
+      if (c.nodeType === 3) out += c.nodeValue;
+      else if (c.nodeType === 1) {
+        const t = c.tagName;
+        if (t === 'BR') out += '\n';
+        else if (t === 'IMG') out += '[贴纸]';
+        else { const b = t === 'DIV' || t === 'P' || t === 'LI'; if (b && out && !out.endsWith('\n')) out += '\n'; walk(c); if (b && !out.endsWith('\n')) out += '\n'; }
+      }
+    }
+  })(root);
+  return out.replace(/\u00a0/g, ' ').replace(/\n{3,}/g, '\n\n').trim();
+}
+const CJK = /[\u3400-\u9fff\uf900-\ufaff\u3040-\u30ff\uac00-\ud7af]/g;
+const countWords = t => (t.match(CJK) || []).length + (t.replace(CJK, ' ').match(/[A-Za-z0-9]+(?:['’-][A-Za-z0-9]+)*/g) || []).length;
+
+/* ---------- 本地存储 ---------- */
+const K = { idx:'loog:idx', seed:'loog:seed', ops:'loog:ops', trash:'loog:trash', draft:'loog:draft', todos:'loog:todos', set:'loog:set', stk:'loog:stk', hitokoto:'loog:hitokoto', hkmode:'loog:hkmode' };
+const ek = (id, p) => `loog:e:${id}:${p}`;
+let quotaWarned = false;
+const ls = {
+  get: k => { try { return localStorage.getItem(k); } catch { return null; } },
+  set: (k, v) => { try { localStorage.setItem(k, v); return true; } catch (e) { if (!quotaWarned) { quotaWarned = true; setTimeout(() => toast('本地存储已满 ⚠️ 请到「设置 → 备份与迁移」增量导出并释放空间'), 0); setTimeout(() => quotaWarned = false, 8000); } return false; } },
+  del: k => { try { localStorage.removeItem(k); } catch {} }
+};
+let seed = parseInt(ls.get(K.seed) || '', 10);
+if (!seed) { seed = crypto.getRandomValues(new Uint32Array(1))[0] || 1; ls.set(K.seed, String(seed)); }
+const blk = {
+  enc(s) { const b = te.encode(s), r = LF.mulberry(seed), o = new Uint8Array(b.length); for (let i = 0; i < b.length; i++) o[i] = (b[i] + ((r() * 256) | 0)) & 255; return 'L1:' + b64e(o); },
+  dec(s) { if (!s || !s.startsWith('L1:')) throw new Error('bad block'); const b = b64d(s.slice(3)), r = LF.mulberry(seed), o = new Uint8Array(b.length); for (let i = 0; i < b.length; i++) o[i] = (b[i] - ((r() * 256) | 0)) & 255; return td.decode(o); }
+};
+const saveJ = (k, v) => ls.set(k, blk.enc(JSON.stringify(v)));
+const loadJ = (k, def) => { try { const r = ls.get(k); return r ? JSON.parse(blk.dec(r)) : def; } catch { return def; } };
+const footer = (h, c) => hex2(LF.cyrb(te.encode(h + '|' + c))) + ':' + (h.length + c.length);
+
+function normQuote(q) {
+  if (!q || typeof q !== 'object') return null;
+  const text = String(q.text ?? '').trim();
+  if (!text) return null;
+  return { text: text.slice(0, 200), from: String(q.from ?? '').slice(0, 100) };
+}
+function normMeta(m) {
+  m = m || {}; const now = Date.now();
+  const id = typeof m.id === 'string' && /^[a-z0-9]{6,24}$/i.test(m.id) ? m.id : uid();
+  const tags = Array.isArray(m.tags) ? [...new Set(m.tags.filter(t => typeof t === 'string').map(t => t.replace(/[#\s]/g, '').slice(0, 20)).filter(Boolean))].slice(0, 8) : [];
+  const num = (v, d) => Number.isFinite(v) ? v : d;
+  return { id, date: typeof m.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(m.date) ? m.date : ymd(new Date()), title: String(m.title ?? '').slice(0, 200),
+    weather: WMAP[m.weather] ? m.weather : '', mood: MMAP[m.mood] ? m.mood : '', tags,
+    created: num(m.created, now), updated: num(m.updated, now), words: Math.max(0, num(m.words, 0) | 0), hour: Math.min(23, Math.max(0, num(m.hour, 12) | 0)),
+    quote: normQuote(m.quote) };
+}
+
+const Engine = {
+  entries: new Map(), ids: [], damaged: [], ops: [], trash: {},
+  pack(meta, html) { const h = blk.enc(JSON.stringify(meta)), c = blk.enc(html); return { h, c, f: footer(h, c) }; },
+  unpack(p) { try { if (!p || !p.h || !p.c || !p.f || footer(p.h, p.c) !== p.f) return null; return { meta: normMeta(JSON.parse(blk.dec(p.h))), html: sanitize(blk.dec(p.c)) }; } catch { return null; } },
+  raw(id) { return { h: ls.get(ek(id, 'h')), c: ls.get(ek(id, 'c')), f: ls.get(ek(id, 'f')) }; },
+  write(id, p) { return ls.set(ek(id, 'h'), p.h) && ls.set(ek(id, 'c'), p.c) && ls.set(ek(id, 'f'), p.f); },
+  wipeKeys(id) { ['h','c','f'].forEach(x => ls.del(ek(id, x))); },
+  saveIdx() { ls.set(K.idx, blk.enc(JSON.stringify(this.ids))); },
+  init() {
+    let ids = []; try { ids = JSON.parse(blk.dec(ls.get(K.idx))); } catch {}
+    const found = new Set(ids.filter(x => typeof x === 'string' && /^[a-z0-9]{6,24}$/i.test(x)));
+    try { for (let i = 0; i < localStorage.length; i++) { const m = /^loog:e:([^:]+):h$/.exec(localStorage.key(i) || ''); if (m) found.add(m[1]); } } catch {}
+    this.ops = loadJ(K.ops, []); if (!Array.isArray(this.ops)) this.ops = [];
+    this.trash = loadJ(K.trash, {}); if (!this.trash || typeof this.trash !== 'object') this.trash = {};
+    const now = Date.now();
+    this.ops = this.ops.filter(o => o && now - o.t < 7 * DAY);
+    for (const id of Object.keys(this.trash)) if (now - this.trash[id].at > 30 * DAY) delete this.trash[id];
+    this.ids = []; this.damaged = []; let repaired = 0;
+    for (const id of found) {
+      let u = this.unpack(this.raw(id));
+      if (!u) {
+        for (let i = this.ops.length - 1; i >= 0 && !u; i--) { const o = this.ops[i]; if (o.id === id && o.type !== 'delete') { u = this.unpack(o.s); if (u) { this.write(id, o.s); repaired++; } } }
+      }
+      this.ids.push(id);
+      if (u) this.entries.set(id, { meta: u.meta, html: u.html, text: htmlToText(u.html) }); else this.damaged.push(id);
+    }
+    this.repaired = repaired; this.saveIdx(); saveJ(K.ops, this.ops); saveJ(K.trash, this.trash);
+  },
+  log(type, id, p) {
+    this.ops.push({ t: Date.now(), type, id, s: p });
+    const cut = Date.now() - 7 * DAY; this.ops = this.ops.filter(o => o.t >= cut); if (this.ops.length > 400) this.ops = this.ops.slice(-400);
+    if (!saveJ(K.ops, this.ops)) { this.ops = this.ops.slice(Math.floor(this.ops.length / 2)); saveJ(K.ops, this.ops); }
+  },
+  put(meta, html, type) {
+    const p = this.pack(meta, html); if (!this.write(meta.id, p)) return false;
+    this.entries.set(meta.id, { meta, html, text: htmlToText(html) });
+    if (!this.ids.includes(meta.id)) this.ids.push(meta.id);
+    this.saveIdx(); this.log(type, meta.id, p); return true;
+  },
+  create(data, html) { const now = Date.now(); const meta = normMeta({ ...data, id: uid(), created: now, updated: now, hour: new Date().getHours() }); return this.put(meta, html, 'create') ? meta : null; },
+  update(id, data, html) { const old = this.entries.get(id); if (!old) return null; const meta = normMeta({ ...old.meta, ...data, id, created: old.meta.created, updated: Date.now() }); return this.put(meta, html, 'update') ? meta : null; },
+  remove(id) {
+    const e = this.entries.get(id); if (!e) return;
+    const p = this.pack(e.meta, e.html); this.trash[id] = { p, at: Date.now() }; saveJ(K.trash, this.trash);
+    this.wipeKeys(id); this.entries.delete(id); this.ids = this.ids.filter(x => x !== id); this.saveIdx(); this.log('delete', id, p);
+  },
+  trashList() { return Object.entries(this.trash).map(([id, t]) => { const u = this.unpack(t.p); return u ? { id, at: t.at, meta: u.meta, html: u.html } : null; }).filter(Boolean).sort((a, b) => b.at - a.at); },
+  restoreTrash(id) { const t = this.trash[id]; if (!t) return false; const u = this.unpack(t.p); if (!u) return false; if (!this.put(u.meta, u.html, 'restore')) return false; delete this.trash[id]; saveJ(K.trash, this.trash); return true; },
+  purgeTrash(id) { delete this.trash[id]; saveJ(K.trash, this.trash); },
+  release(id) {
+    if (!this.entries.has(id)) return false;
+    this.wipeKeys(id);
+    this.entries.delete(id);
+    this.ids = this.ids.filter(x => x !== id);
+    this.ops = this.ops.filter(o => o.id !== id);
+    this.saveIdx(); saveJ(K.ops, this.ops);
+    if (D && D.editingId === id) { D = newDraft(); ls.del(K.draft); }
+    return true;
+  },
+  versions(id) { return this.ops.filter(o => o.id === id && o.type !== 'delete').map(o => ({ t: o.t, type: o.type, u: this.unpack(o.s) })).filter(v => v.u).reverse(); },
+  restoreVersion(id, t) {
+    const v = this.versions(id).find(x => x.t === t); if (!v) return false;
+    const m = v.u.meta;
+    return !!this.update(id, { date: m.date, title: m.title, weather: m.weather, mood: m.mood, tags: m.tags, words: m.words, quote: m.quote }, v.u.html);
+  },
+  cleanDamaged() { this.damaged.forEach(id => this.wipeKeys(id)); this.ids = this.ids.filter(id => !this.damaged.includes(id)); this.damaged = []; this.saveIdx(); },
+  scanAll() {
+    const good = [], bad = [];
+    for (const id of this.ids) { const u = this.unpack(this.raw(id)); if (u) good.push(id); else bad.push(id); }
+    return { total: this.ids.length, good, bad };
+  },
+  tryRepair(id) {
+    for (let i = this.ops.length - 1; i >= 0; i--) {
+      const o = this.ops[i];
+      if (o.id !== id || o.type === 'delete') continue;
+      const u = this.unpack(o.s);
+      if (u && this.put(u.meta, u.html, 'update')) return true;
+    }
+    return false;
+  },
+  cleanOne(id) {
+    this.wipeKeys(id);
+    this.ids = this.ids.filter(x => x !== id);
+    this.damaged = this.damaged.filter(x => x !== id);
+    this.saveIdx();
+  },
+  sorted() { return [...this.entries.values()].sort((a, b) => b.meta.date.localeCompare(a.meta.date) || b.meta.created - a.meta.created); },
+  search({ q = '', date = '', tag = '' }) {
+    const terms = q.toLowerCase().split(/\s+/).filter(Boolean);
+    return this.sorted().filter(e => {
+      if (date && e.meta.date !== date) return false;
+      if (tag && !e.meta.tags.includes(tag)) return false;
+      if (!terms.length) return true;
+      const quoteTxt = e.meta.quote ? e.meta.quote.text + ' ' + e.meta.quote.from : '';
+      const hay = (e.meta.title + '\n' + e.text + '\n' + e.meta.tags.join(' ') + '\n' + e.meta.date + '\n' + cnDate(e.meta.date) + '\n' + quoteTxt).toLowerCase();
+      return terms.every(t => hay.includes(t));
+    });
+  }
+};
+
+/* ---------- 应用状态 ---------- */
+const newDraft = () => ({ editingId: null, date: ymd(new Date()), title: '', html: '', weather: '', mood: '', tags: [], quote: null });
+const S = { skin: 'warm', customSkin: null, todos: [], stickers: [], filter: { q: '', date: '', tag: '' }, year: new Date().getFullYear(), month: new Date().getMonth(), heat: 'year', quote: 0, capsule: null, justSaved: null,
+  hitokoto: { text: '', from: '', uuid: '', fetchedAt: 0, source: 'local' }, hitokotoMode: 'online' };
+let D = newDraft();
+const draftHas = () => !!(D.title.trim() || D.tags.length || D.quote || htmlToText(D.html) || D.html.includes('<img'));
+
+/* ---------- 统计 ---------- */
+function stats() {
+  const list = [...Engine.entries.values()].map(e => e.meta), byDate = new Map(), mood = {}, weather = {}, hours = Array(24).fill(0);
+  let words = 0;
+  list.forEach(m => { const o = byDate.get(m.date) || { n: 0, w: 0 }; o.n++; o.w += m.words; byDate.set(m.date, o); words += m.words; if (m.mood) mood[m.mood] = (mood[m.mood] || 0) + 1; if (m.weather) weather[m.weather] = (weather[m.weather] || 0) + 1; hours[m.hour]++; });
+  const days = [...byDate.keys()].sort();
+  let cur = 0; const d = new Date(); if (!byDate.has(ymd(d))) d.setDate(d.getDate() - 1); while (byDate.has(ymd(d))) { cur++; d.setDate(d.getDate() - 1); }
+  let best = 0, run = 0, prev = null; days.forEach(s => { const dt = parseYmd(s); run = prev && Math.round((dt - prev) / DAY) === 1 ? run + 1 : 1; best = Math.max(best, run); prev = dt; });
+  const topHour = hours.some(Boolean) ? hours.indexOf(Math.max(...hours)) : -1;
+  return { total: list.length, words, byDate, mood, weather, hours, streak: cur, best, avg: days.length ? Math.round(words / days.length) : 0, topHour, days: days.length };
+}
+const periodName = h => h < 5 ? '深夜' : h < 9 ? '清晨' : h < 12 ? '上午' : h < 14 ? '中午' : h < 18 ? '下午' : h < 22 ? '晚间' : '深夜';
+
+/* ---------- UI 基础 ---------- */
+let toastT;
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.remove('opacity-0', '-translate-y-6'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.add('opacity-0', '-translate-y-6'), 2400); }
+const modals = [];
+function modal(html, { wide = false, onClose } = {}) {
+  const wrap = document.createElement('div');
+  wrap.className = 'overlay-in fixed inset-0 z-50 flex items-end justify-center p-3 sm:items-center';
+  wrap.innerHTML = `<div class="absolute inset-0 bg-ink/30 backdrop-blur-sm" data-close></div><div class="modal-in card relative max-h-[90vh] w-full ${wide ? 'max-w-2xl' : 'max-w-md'} overflow-auto p-5 sm:p-7">${html}</div>`;
+  $('#modalRoot').appendChild(wrap);
+  const m = { el: wrap, closed: false, close() { if (m.closed) return; m.closed = true; const i = modals.indexOf(m); if (i >= 0) modals.splice(i, 1); wrap.classList.add('out'); setTimeout(() => wrap.remove(), 220); onClose && onClose(); } };
+  wrap.addEventListener('click', e => { if (e.target.closest('[data-close]')) m.close(); });
+  modals.push(m); return m;
+}
+function confirmDlg(title, msg, ok = '确定', danger = false) {
+  return new Promise(res => {
+    const m = modal(`<h3 class="h2">${esc(title)}</h3><p class="mt-3 text-sm leading-7 text-ink/75">${esc(msg)}</p><div class="mt-6 flex justify-end gap-2"><button class="btn btn-ghost" data-close>取消</button><button class="btn ${danger ? 'btn-danger' : 'btn-primary'}" data-yes>${esc(ok)}</button></div>`, { onClose: () => res(false) });
+    $('[data-yes]', m.el).onclick = () => { res(true); m.close(); };
+  });
+}
+function askPw(title, desc, again) {
+  return new Promise(res => {
+    const m = modal(`<h3 class="h2">${esc(title)}</h3><p class="mt-2 text-sm leading-7 text-ink/70">${esc(desc)}</p>
+      <input type="password" id="pw1" class="field mt-4 w-full" placeholder="密码" autocomplete="off">
+      ${again ? '<input type="password" id="pw2" class="field mt-3 w-full" placeholder="再输入一次密码" autocomplete="off">' : ''}
+      <p id="pwErr" class="mt-2 min-h-[1.25rem] text-xs text-rose"></p>
+      <div class="mt-3 flex justify-end gap-2"><button class="btn btn-ghost" data-close>取消</button><button class="btn btn-primary" id="pwOk">确定</button></div>`, { onClose: () => res(null) });
+    const go = () => { const a = $('#pw1', m.el).value, b = again ? $('#pw2', m.el).value : a, er = $('#pwErr', m.el);
+      if (a.length < (again ? 8 : 1)) { er.textContent = again ? '密码至少 8 位（忘记密码将无法找回）' : '请输入密码'; return; }
+      if (a !== b) { er.textContent = '两次输入不一致'; return; } res(a); m.close(); };
+    $('#pwOk', m.el).onclick = go; m.el.addEventListener('keydown', e => { if (e.key === 'Enter') go(); }); setTimeout(() => $('#pw1', m.el).focus(), 60);
+  });
+}
+
+/* ---------- 路由 ---------- */
+let cur = null;
+const render = {};
+function go(p) {
+  if (!PAGES.some(x => x[0] === p)) p = 'home';
+  if (p !== 'write') exitFocus();
+  if (cur === p) { render[p](); return; }
+  const apply = () => {
+    $$('.page').forEach(x => x.classList.remove('active', 'out'));
+    $('#pg-' + p).classList.add('active'); cur = p; render[p](); updateNav();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (location.hash !== '#' + p) history.replaceState(null, '', '#' + p);
+  };
+  const old = cur && $('#pg-' + cur);
+  if (old) { old.classList.add('out'); setTimeout(apply, 200); } else apply();
+}
+function buildNav() {
+  const svg = i => `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${i}</svg>`;
+  $('#navDesk').innerHTML = PAGES.map(([k, n, i]) => `<button data-go="${k}" data-nav="${k}" class="flex items-center gap-1.5 rounded-full px-4 py-2 text-sm transition-all duration-300 hover:bg-ink/5">${svg(i).replace('22', '18').replace('22', '18')}${n}</button>`).join('');
+  $('#navMob').innerHTML = `<div class="mx-auto flex max-w-md justify-around px-2 py-1.5">${PAGES.map(([k, n, i]) => `<button data-go="${k}" data-nav="${k}" class="flex flex-1 flex-col items-center gap-0.5 rounded-2xl px-2 py-1.5 text-[11px] transition-all duration-300">${svg(i)}${n}</button>`).join('')}</div>`;
+}
+function updateNav() { $$('[data-nav]').forEach(b => { const on = b.dataset.nav === cur; b.classList.toggle('bg-sage/25', on); b.classList.toggle('text-ink', on); b.classList.toggle('text-ink/60', !on); b.classList.toggle('font-semibold', on); }); }
+function countUp() { $$('[data-count]').forEach(el => { const to = +el.dataset.count || 0, t0 = performance.now(); (function f(t) { const k = Math.min(1, (t - t0) / 900), e = 1 - Math.pow(1 - k, 3); el.textContent = Math.round(to * e).toLocaleString(); if (k < 1) requestAnimationFrame(f); })(t0); }); }
+const emo = m => `${m.weather ? WMAP[m.weather][1] : ''}${m.mood ? MMAP[m.mood][1] : ''}`;
+const snippet = (t, n = 90) => esc(t.replace(/\s+/g, ' ').slice(0, n));
+
+/* ---------- 每日一句 ---------- */
+const HITOKOTO_TTL = 6 * 3600 * 1000;
+const HK_TYPES = ['d', 'i', 'e', 'k'];
+const HK_TYPE_NAMES = { a:'动画', b:'漫画', c:'游戏', d:'文学', e:'原创', f:'网络', g:'其他', h:'影视', i:'诗词', j:'网易云', k:'哲学', l:'抖机灵' };
+const HK_TYPE_DESC = HK_TYPES.map(t => `${t}=${HK_TYPE_NAMES[t]}`).join(' · ');
+
+async function loadHitokoto(force = false) {
+  const now = Date.now();
+  if (!force && S.hitokoto.text && (now - S.hitokoto.fetchedAt) < HITOKOTO_TTL) return S.hitokoto;
+  const mode = S.hitokotoMode;
+  if (mode === 'online') {
+    try {
+      const cParams = HK_TYPES.map(t => 'c=' + t).join('&');
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 3500);
+      const res = await fetch(`https://v1.hitokoto.cn/?encode=json&${cParams}`, { signal: ctrl.signal });
+      clearTimeout(timer);
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.hitokoto) {
+          S.hitokoto = { text: data.hitokoto, from: data.from || '', uuid: data.uuid || '', fetchedAt: now, source: 'online' };
+          saveJ(K.hitokoto, S.hitokoto); return S.hitokoto;
+        }
+      }
+    } catch (e) { console.warn('一言 API 获取失败，尝试回退', e); }
+  }
+  if (mode === 'bundle' || (mode === 'online' && !S.hitokoto.text)) {
+    const shuffled = [...HK_TYPES].sort(() => Math.random() - 0.5);
+    for (const type of shuffled) {
+      try {
+        const res = await fetch(`https://cdn.jsdelivr.net/gh/hitokoto-osc/sentences-bundle@master/sentences/${type}.json`);
+        if (res.ok) {
+          const list = await res.json();
+          if (Array.isArray(list) && list.length) {
+            const item = list[Math.floor(Math.random() * list.length)];
+            S.hitokoto = { text: item.hitokoto, from: item.from || '', uuid: item.uuid || '', fetchedAt: now, source: 'bundle' };
+            saveJ(K.hitokoto, S.hitokoto); return S.hitokoto;
+          }
+        }
+      } catch (e) { console.warn(`语句库分类 ${type} 加载失败`, e); }
+    }
+  }
+  if (mode === 'local' || !S.hitokoto.text) {
+    const idx = Math.floor(Math.random() * QUOTES.length);
+    S.hitokoto = { text: QUOTES[idx], from: '', uuid: '', fetchedAt: now, source: 'local' };
+    saveJ(K.hitokoto, S.hitokoto);
+  }
+  return S.hitokoto;
+}
+let quoteTypeTimer;
+function typeQuote(hk) {
+  const textEl = $('#dailyQuoteText'), fromEl = $('#dailyQuoteFrom');
+  if (!textEl) return;
+  clearInterval(quoteTypeTimer);
+  textEl.textContent = '';
+  textEl.classList.add('type-caret');
+  if (fromEl) { fromEl.textContent = ''; fromEl.style.opacity = '0'; }
+  const text = hk.text || '';
+  let i = 0;
+  quoteTypeTimer = setInterval(() => {
+    i++;
+    textEl.textContent = '“' + text.slice(0, i) + (i < text.length ? '' : '”');
+    if (i >= text.length) {
+      clearInterval(quoteTypeTimer);
+      setTimeout(() => textEl.classList.remove('type-caret'), 1200);
+      if (fromEl && hk.from) {
+        fromEl.textContent = '—— ' + hk.from;
+        setTimeout(() => fromEl.style.opacity = '1', 100);
+      }
+    }
+  }, 65);
+}
+function attachQuote() {
+  const hk = S.hitokoto;
+  if (!hk || !hk.text) { toast('还没有好句可以附加'); return; }
+  if (D.quote && D.quote.text === hk.text) {
+    if (cur !== 'write') go('write');
+    toast('这句话已经附在这一页了');
+    return;
+  }
+  D.quote = { text: hk.text, from: hk.from || '' };
+  if (cur === 'write') { renderQuoteChip(); schedDraft(); }
+  else { saveJ(K.draft, D); go('write'); }
+  toast('好句已附到这一页 ✦');
+}
+
+/* ===== 首页 ===== */
+function renderHome() {
+  const now = new Date(), st = stats(), today = ymd(now), wrote = st.byDate.has(today), hr = now.getHours();
+  const greet = hr < 5 ? '夜深了，还没睡呀' : hr < 11 ? '早上好' : hr < 14 ? '中午好' : hr < 18 ? '下午好' : '晚上好';
+  const doy = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / DAY);
+  const quoteText = S.hitokoto.text || QUOTES[(doy + S.quote) % QUOTES.length];
+  const quoteFrom = S.hitokoto.from ? `—— ${S.hitokoto.from}` : '';
+  const recent = Engine.sorted().slice(0, 3);
+  const attachedNow = D.quote && S.hitokoto.text && D.quote.text === S.hitokoto.text;
+  $('#pg-home').innerHTML = `
+  <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+    <div class="card floaty slide-up relative overflow-hidden p-6 sm:p-8 md:col-span-2" style="--i:0">
+      <div class="pointer-events-none absolute -right-10 -top-10 h-44 w-44 rounded-full bg-rose/20 blur-2xl"></div>
+      <div class="sub">${esc(greet)}</div>
+      <div class="mt-1 flex items-end gap-3"><span class="font-brand text-6xl leading-none sm:text-7xl">${now.getDate()}</span><div class="pb-1"><div class="text-lg font-semibold">${now.getFullYear()}年${now.getMonth() + 1}月</div><div class="sub">星期${WD[now.getDay()]}</div></div></div>
+      <p id="dailyQuoteText" class="font-hand mt-5 min-h-[3.5rem] text-lg leading-8 text-ink/85">“${esc(quoteText)}”</p>
+      <div id="dailyQuoteFrom" class="sub mt-1 text-right truncate" style="opacity:${quoteFrom ? 1 : 0}">${esc(quoteFrom)}</div>
+      <div class="mt-2 flex items-center justify-end gap-1.5">
+        <button data-act="quote-attach" class="quote-heart ${attachedNow ? 'attached' : ''} w-6 h-6 grid place-items-center rounded-full" title="把这句附到日记里" aria-label="把这句话附到日记里">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5s-7-4.4-9.4-8.7A5.3 5.3 0 0 1 12 6.1a5.3 5.3 0 0 1 9.4 5.7C19 16.1 12 20.5 12 20.5z"/></svg>
+        </button>
+        <button data-act="quote-next" class="quote-refresh w-6 h-6 grid place-items-center rounded-full" title="换一句" aria-label="换一句">⟳</button>
+      </div>
+      <div class="mt-4 flex flex-wrap gap-2">
+        <button class="btn btn-primary" data-act="write-today">${wrote ? '再补充一篇 ✍️' : (draftHas() ? '继续未完成的草稿 ✍️' : '写下今天 ✍️')}</button>
+      </div>
+      ${draftHas() ? '<div class="sub mt-3">📝 你有一篇自动保存的草稿正在等你</div>' : ''}
+    </div>
+    <div class="card slide-up p-6" style="--i:1">
+      <div class="flex items-center justify-between"><h3 class="h2">本月进度</h3><span class="sub">${now.getMonth() + 1} 月</span></div>
+      <div id="ringBox" class="mt-3 flex items-center justify-center"></div>
+    </div>
+    <div class="card slide-up p-6 md:col-span-2" style="--i:2">
+      <div class="flex items-center justify-between"><h3 class="h2">最近的日记</h3><button class="sub hover:text-ink" data-go="list">全部 →</button></div>
+      <div class="mt-3 space-y-2">${recent.length ? recent.map(e => `
+        <button data-act="open-entry" data-id="${e.meta.id}" class="group block w-full rounded-2xl border border-transparent p-3 text-left transition-all duration-300 hover:translate-x-1 hover:border-line hover:bg-paper/60">
+          <div class="flex items-center justify-between gap-2"><span class="truncate font-semibold">${e.meta.quote ? '<span class="text-ink/25 mr-1">❝</span>' : ''}${esc(e.meta.title || '无题')}</span><span class="sub shrink-0">${emo(e.meta)} ${e.meta.date.slice(5)}</span></div>
+          <p class="font-hand mt-1 line-clamp-2 text-sm leading-6 text-ink/65">${snippet(e.text, 80) || '（只有贴纸）'}</p></button>`).join('') : '<p class="sub py-6 text-center">还没有日记，写下第一页吧 🌱</p>'}</div>
+    </div>
+    <div class="card slide-up p-6" style="--i:3">
+      <h3 class="h2">时光胶囊</h3><p class="sub mt-1">随机翻开一段过去的心情</p>
+      <div id="capsuleBody" class="mt-4"></div>
+    </div>
+    <div class="card slide-up p-6 md:col-span-2 lg:col-span-3" style="--i:4">
+      <div class="flex items-center justify-between"><h3 class="h2">今日待办</h3><button class="sub hover:text-ink" data-act="todo-clear">清除已完成</button></div>
+      <div class="mt-3 flex gap-2"><input id="todoInput" class="field flex-1" maxlength="120" placeholder="记一件小事，回车添加…"><button class="btn btn-sage" data-act="todo-add">添加</button></div>
+      <ul id="todoList" class="mt-3 grid gap-2 sm:grid-cols-2"></ul>
+    </div>
+  </div>`;
+  const wd = st.byDate; let n = 0; const dim = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  for (let d = 1; d <= dim; d++) if (wd.has(`${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(d)}`)) n++;
+  const R = 52, C = 2 * Math.PI * R, pct = n / dim;
+  $('#ringBox').innerHTML = `<div class="relative"><svg width="150" height="150" viewBox="0 0 130 130"><circle cx="65" cy="65" r="${R}" fill="none" stroke="rgb(var(--line))" stroke-width="11"/><circle id="ringArc" cx="65" cy="65" r="${R}" fill="none" stroke="rgb(var(--sage))" stroke-width="11" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C}" transform="rotate(-90 65 65)" style="transition:stroke-dashoffset 1.4s cubic-bezier(.2,.8,.2,1)"/></svg>
+    <div class="absolute inset-0 grid place-items-center text-center"><div><div class="text-3xl font-bold">${Math.round(pct * 100)}<span class="text-base">%</span></div><div class="sub">${n} / ${dim} 天</div></div></div></div>`;
+  requestAnimationFrame(() => requestAnimationFrame(() => { const a = $('#ringArc'); if (a) a.style.strokeDashoffset = C * (1 - pct); }));
+  renderCapsule(); renderTodo();
+  loadHitokoto().then(hk => {
+    const el = $('#dailyQuoteText');
+    const curText = el ? el.textContent.replace(/^“|”$/g, '') : '';
+    if (curText === hk.text) return;
+    typeQuote(hk);
+  });
+}
+function renderCapsule() {
+  const box = $('#capsuleBody'); if (!box) return;
+  const e = S.capsule && Engine.entries.get(S.capsule);
+  if (!e) {
+    box.innerHTML = `<button data-act="capsule-open" class="cap-wobble btn btn-ghost w-full flex-col py-6"><svg width="54" height="54" viewBox="0 0 64 64"><g transform="rotate(-35 32 32)"><rect x="18" y="6" width="28" height="52" rx="14" fill="rgb(var(--rose))" opacity=".85"/><path d="M18 32h28v12a14 14 0 0 1-28 0z" fill="rgb(var(--sand))"/><rect x="18" y="6" width="28" height="52" rx="14" fill="none" stroke="rgb(var(--ink))" stroke-opacity=".35" stroke-width="2"/></g></svg><span>${Engine.entries.size ? '打开一颗胶囊' : '写下第一篇后即可开启'}</span></button>`;
+  } else {
+    box.innerHTML = `<div style="animation:pop .5s ease both"><button data-act="open-entry" data-id="${e.meta.id}" class="block w-full rounded-2xl bg-paper/70 p-4 text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-md"><div class="sub">${cnDate(e.meta.date)} ${emo(e.meta)}</div><div class="mt-1 font-semibold">${e.meta.quote ? '<span class="text-ink/25 mr-1">❝</span>' : ''}${esc(e.meta.title || '无题')}</div><p class="font-hand mt-1 line-clamp-4 text-sm leading-7 text-ink/70">${snippet(e.text, 120)}</p></button><button data-act="capsule-open" class="btn btn-ghost mt-3 w-full">再抽一颗</button></div>`;
+  }
+}
+function renderTodo() {
+  const ul = $('#todoList'); if (!ul) return;
+  ul.innerHTML = S.todos.length ? S.todos.map(t => `<li class="group flex items-center gap-3 rounded-2xl border border-line/70 bg-paper/50 px-3 py-2 transition-all duration-300 hover:border-sage" style="animation:pop .4s ease both">
+    <button data-act="todo-toggle" data-id="${t.id}" class="grid h-5 w-5 shrink-0 place-items-center rounded-full border-2 transition-all duration-200 ${t.done ? 'border-sage bg-sage text-white' : 'border-ink/30 hover:border-sage'} text-[10px]">${t.done ? '✓' : ''}</button>
+    <span class="flex-1 break-words text-sm transition-all duration-200 ${t.done ? 'text-ink/35 line-through' : ''}">${esc(t.text)}</span>
+    <button data-act="todo-del" data-id="${t.id}" class="text-ink/30 opacity-0 transition-all hover:text-rose group-hover:opacity-100 max-sm:opacity-100">✕</button></li>`).join('') : '<li class="sub col-span-full py-3 text-center">今天还没有待办，清清爽爽 ☁️</li>';
+}
+
+/* ===== 书写页 ===== */
+let ed, typeTimer, draftTimer;
+function buildWrite() {
+  $('#pg-write').innerHTML = `
+  <div class="mx-auto max-w-3xl"><div class="card p-4 sm:p-6 md:p-8">
+    <div class="chrome-hide">
+      <div class="flex flex-wrap items-center justify-between gap-2"><input type="date" id="wDate" class="field w-auto"><span id="wState" class="sub"></span></div>
+      <div id="wMode" class="mt-2 hidden rounded-xl bg-sand/30 px-3 py-1.5 text-xs">正在编辑已有日记 · <button class="underline" data-act="discard">放弃编辑</button></div>
+      <div class="sub mt-4 mb-2">今日天气</div><div id="wWeather" class="flex flex-wrap gap-2"></div>
+      <div class="sub mt-4 mb-2">心情贴纸</div><div id="wMood" class="flex flex-wrap gap-2"></div>
+    </div>
+    <input id="wTitle" maxlength="100" placeholder="给今天起个标题…" class="mt-5 w-full border-b border-transparent bg-transparent pb-1 text-2xl font-bold outline-none transition-colors duration-300 placeholder:text-ink/30 focus:border-line">
+    <div id="wQuote" class="hidden mt-3"></div>
+    <div id="wTbWrap" class="chrome-hide relative mt-3"><div class="flex flex-wrap items-center gap-1 rounded-2xl bg-ink/5 p-1.5">
+      <button class="tbtn font-bold" data-cmd="bold" title="加粗">B</button>
+      <button class="tbtn italic font-hand" data-cmd="italic" title="斜体">I</button>
+      <button class="tbtn underline" data-cmd="underline" title="下划线">U</button>
+      <button class="tbtn" data-cmd="hilite" title="荧光笔">🖍️</button>
+      <button class="tbtn" data-cmd="removeFormat" title="清除格式">🧹</button>
+      <button class="tbtn" data-pop="emoji" title="表情">😊</button>
+      <button class="tbtn" data-pop="sticker" title="涂鸦贴纸">🎨</button>
+      <span class="sub ml-auto px-2 max-sm:hidden">Ctrl/⌘+B · I · U</span></div>
+      <div id="popEmoji" class="card absolute left-0 top-12 z-20 hidden w-[19rem] max-w-full grid-cols-8 gap-1 p-3" style="animation:pop .25s ease both">${EMOJIS.map(e => `<button class="tbtn !h-8 !w-8" data-act="emoji-ins" data-e="${e}">${e}</button>`).join('')}</div>
+      <div id="popSticker" class="card absolute left-0 top-12 z-20 hidden w-[19rem] max-w-full p-3" style="animation:pop .25s ease both"><div id="stkTray" class="flex max-h-40 flex-wrap gap-2 overflow-auto"></div><button class="btn btn-ghost mt-2 w-full" data-act="doodle">✏️ 画一个新贴纸</button></div>
+    </div>
+    <div class="relative mt-3"><div id="wEditor" class="editor paper-lines font-hand min-h-[44vh] whitespace-pre-wrap break-words px-1 text-[1.06rem]" contenteditable="true" spellcheck="false" role="textbox" aria-multiline="true" aria-label="日记正文"></div><div id="wPrompt" class="font-hand pointer-events-none absolute left-1 top-0 text-[1.06rem] leading-9 text-ink/35"></div></div>
+    <div class="chrome-hide mt-4"><div class="flex flex-wrap items-center gap-2"><span class="sub">标签</span><div id="wTags" class="flex flex-wrap gap-1.5"></div><input id="wTagInput" list="tagList" maxlength="20" class="field !py-1 w-32" placeholder="# 回车添加"><datalist id="tagList"></datalist></div></div>
+    <div class="mt-5 flex flex-wrap items-center justify-between gap-3"><span class="sub"><span id="wCount" class="inline-block font-semibold text-ink/80">0</span> 字</span>
+      <div class="flex gap-2"><button class="btn btn-ghost" data-act="focus">🌙 专注模式</button><button class="btn btn-primary" data-act="save" id="wSave">保存日记</button></div></div>
+  </div></div>`;
+  ed = $('#wEditor');
+  ed.addEventListener('input', () => { D.html = ed.innerHTML; updateCount(); syncPrompt(); schedDraft(); });
+  ed.addEventListener('paste', e => { e.preventDefault(); document.execCommand('insertText', false, (e.clipboardData || window.clipboardData).getData('text/plain')); });
+  ed.addEventListener('drop', e => e.preventDefault());
+  $('#wTbWrap').addEventListener('mousedown', e => e.preventDefault());
+  $('#wTitle').addEventListener('input', e => { D.title = e.target.value; schedDraft(); });
+  $('#wDate').addEventListener('change', e => { D.date = e.target.value || ymd(new Date()); schedDraft(); });
+  $('#wTagInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ',' || e.key === '，') { e.preventDefault(); const v = e.target.value.replace(/[#\s,，]/g, '').slice(0, 20); if (v && !D.tags.includes(v) && D.tags.length < 8) { D.tags.push(v); renderTags(); schedDraft(); } e.target.value = ''; }
+    else if (e.key === 'Backspace' && !e.target.value && D.tags.length) { D.tags.pop(); renderTags(); schedDraft(); }
+  });
+  document.addEventListener('selectionchange', () => {
+    if (cur !== 'write') return;
+    const s = getSelection();
+    if (!s.anchorNode || !ed.contains(s.anchorNode)) return;
+    const stateful = ['bold', 'italic', 'underline'];
+    $$('[data-cmd]').forEach(b => {
+      if (!stateful.includes(b.dataset.cmd)) return;
+      try { b.classList.toggle('on', document.queryCommandState(b.dataset.cmd)); } catch (e) {}
+    });
+  });
+  ed.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); saveEntry(); } });
+}
+function renderQuoteChip() {
+  const box = $('#wQuote'); if (!box) return;
+  if (!D.quote) { box.classList.add('hidden'); box.innerHTML = ''; return; }
+  box.classList.remove('hidden');
+  box.innerHTML = `<div class="relative rounded-2xl bg-sand/20 border border-dashed border-sand/80 pl-4 pr-10 py-3">
+    <div class="flex items-center gap-1.5 text-[11px] text-ink/50 mb-1"><span>❝</span><span>附加的好句</span></div>
+    <p class="font-hand text-[15px] leading-7 text-ink/80 break-words">“${esc(D.quote.text)}”</p>
+    ${D.quote.from ? `<div class="sub mt-1 text-right">—— ${esc(D.quote.from)}</div>` : ''}
+    <button data-act="quote-detach" class="absolute top-2 right-2 w-6 h-6 grid place-items-center rounded-full text-ink/35 hover:text-rose hover:bg-ink/5 transition" title="移除附加" aria-label="移除附加的好句">×</button>
+  </div>`;
+}
+function syncEditorFromDraft() {
+  ed.innerHTML = sanitize(D.html); $('#wTitle').value = D.title; $('#wDate').value = D.date;
+  $('#wMode').classList.toggle('hidden', !D.editingId); $('#wSave').textContent = D.editingId ? '更新日记' : '保存日记';
+  renderChips(); renderTags(); renderQuoteChip(); updateCount(); syncPrompt(true);
+  $('#tagList').innerHTML = [...new Set([...Engine.entries.values()].flatMap(e => e.meta.tags))].map(t => `<option value="${esc(t)}">`).join('');
+  $('#stkTray').innerHTML = S.stickers.length ? S.stickers.map((s, i) => `<button class="rounded-xl border border-line p-1 transition-all hover:-translate-y-0.5 hover:border-sage" data-act="sticker-ins" data-i="${i}"><img src="${s}" alt="贴纸" class="h-12 w-12 object-contain"></button>`).join('') : '<p class="sub">还没有贴纸，画一个吧～</p>';
+}
+function renderChips() {
+  $('#wWeather').innerHTML = WEATHER.map(([k, e, n]) => `<button class="chip" aria-pressed="${D.weather === k}" data-act="weather" data-k="${k}">${e} ${n}</button>`).join('');
+  $('#wMood').innerHTML = MOODS.map(([k, e, n]) => `<button class="chip" aria-pressed="${D.mood === k}" data-act="mood" data-k="${k}">${e} ${n}</button>`).join('');
+}
+function renderTags() { $('#wTags').innerHTML = D.tags.map((t, i) => `<span class="inline-flex items-center gap-1 rounded-full bg-sand/35 px-2.5 py-0.5 text-xs" style="animation:pop .3s ease both">#${esc(t)}<button data-act="tag-del" data-i="${i}" class="opacity-50 hover:opacity-100">×</button></span>`).join(''); }
+const edEmpty = () => !ed.textContent.trim() && !ed.querySelector('img');
+function updateCount() { const c = $('#wCount'); c.textContent = countWords(ed.innerText || ed.textContent || ''); c.classList.remove('tick'); void c.offsetWidth; c.classList.add('tick'); }
+function syncPrompt(restart) {
+  const p = $('#wPrompt'); if (!edEmpty()) { clearTimeout(typeTimer); p.textContent = ''; p.dataset.t = ''; return; }
+  if (p.dataset.t && !restart) return;
+  clearTimeout(typeTimer); const txt = PROMPTS[Math.floor(Math.random() * PROMPTS.length)]; p.dataset.t = '1'; p.textContent = ''; let i = 0;
+  (function step() { if (!edEmpty()) { p.textContent = ''; return; } p.textContent = txt.slice(0, ++i); if (i < txt.length) typeTimer = setTimeout(step, 90); })();
+}
+function schedDraft() { $('#wState').textContent = '正在记录…'; clearTimeout(draftTimer); draftTimer = setTimeout(flushDraft, 280); }
+function flushDraft() {
+  clearTimeout(draftTimer);
+  if (!draftHas() && !D.editingId) ls.del(K.draft); else saveJ(K.draft, D);
+  const s = $('#wState'); if (s) s.textContent = '草稿已自动保存 ✓ ' + new Date().toLocaleTimeString('zh-CN', { hour12: false });
+}
+function ensureSel() { const sel = getSelection(); if (!sel.rangeCount || !ed.contains(sel.anchorNode)) { ed.focus(); const r = document.createRange(); r.selectNodeContents(ed); r.collapse(false); sel.removeAllRanges(); sel.addRange(r); } }
+function closePops() { $('#popEmoji').classList.add('hidden'); $('#popEmoji').classList.remove('grid'); $('#popSticker').classList.add('hidden'); }
+function togglePop(name) {
+  const e = $('#popEmoji'), s = $('#popSticker'); const open = name === 'emoji' ? e.classList.contains('hidden') : s.classList.contains('hidden'); closePops();
+  if (open) { if (name === 'emoji') { e.classList.remove('hidden'); e.classList.add('grid'); } else s.classList.remove('hidden'); }
+}
+function resetEditor() { D = newDraft(); ls.del(K.draft); syncEditorFromDraft(); }
+function saveEntry() {
+  const html = sanitize(ed.innerHTML), text = htmlToText(html);
+  if (!text && !D.title.trim() && !html.includes('<img') && !D.quote) { toast('先写下几个字吧 ✍️'); return; }
+  const data = { date: D.date || ymd(new Date()), title: D.title.trim(), weather: D.weather, mood: D.mood, tags: D.tags, words: countWords(text), quote: D.quote };
+  const meta = D.editingId && Engine.entries.has(D.editingId) ? Engine.update(D.editingId, data, html) : Engine.create(data, html);
+  if (!meta) { toast('保存失败：本地存储可能已满，请增量导出后释放空间 ⚠️'); return; }
+  S.justSaved = meta.id; resetEditor(); toast(SAVED_MSGS[Math.floor(Math.random() * SAVED_MSGS.length)]); exitFocus(); setTimeout(() => go('list'), 700);
+}
+function enterFocus() { document.body.classList.add('focus-mode'); $('#exitFocus').classList.remove('hidden'); closePops(); setTimeout(() => ed.focus(), 300); }
+function exitFocus() { document.body.classList.remove('focus-mode'); $('#exitFocus').classList.add('hidden'); }
+function startEdit(id) {
+  const e = Engine.entries.get(id); if (!e) return;
+  const go2 = () => {
+    const m = e.meta;
+    D = { editingId: id, date: m.date, title: m.title, html: e.html, weather: m.weather, mood: m.mood, tags: [...m.tags], quote: m.quote ? { ...m.quote } : null };
+    saveJ(K.draft, D); modals.slice().forEach(x => x.close());
+    if (cur === 'write') syncEditorFromDraft(); else go('write');
+  };
+  if (draftHas() && D.editingId !== id) confirmDlg('载入这篇日记？', '当前编辑区里有未保存的内容，载入后将被替换。', '载入').then(ok => ok && go2()); else go2();
+}
+function doodleModal() {
+  const cols = ['#4e463f', '#b08a74', '#c29490', '#8f9f8e', '#8fa0af', '#d1be9e', '#9e8aa0', '#ffffff']; let color = cols[0], size = 5, drawn = false;
+  const m = modal(`<h3 class="h2">画一个贴纸</h3><p class="sub mt-1">手指或鼠标都可以，保存后可随时插入日记</p>
+    <canvas id="dc" width="300" height="300" class="mx-auto mt-4 block w-full max-w-[300px] touch-none rounded-2xl border border-line bg-paper/80"></canvas>
+    <div class="mt-3 flex flex-wrap items-center justify-center gap-2" id="dcCols">${cols.map((c, i) => `<button data-c="${c}" class="h-7 w-7 rounded-full border border-ink/20 transition-transform hover:scale-110 ${i ? '' : 'ring-2 ring-sage'}" style="background:${c}"></button>`).join('')}<input id="dcSize" type="range" min="2" max="16" value="5" class="ml-2 w-24 accent-[rgb(var(--clay))]"></div>
+    <div class="mt-4 flex justify-end gap-2"><button class="btn btn-ghost" id="dcClear">清空</button><button class="btn btn-ghost" data-close>取消</button><button class="btn btn-primary" id="dcSave">保存贴纸</button></div>`);
+  const cv = $('#dc', m.el), cx = cv.getContext('2d'); cx.lineCap = 'round'; cx.lineJoin = 'round'; let down = false, lx = 0, ly = 0;
+  const pos = e => { const r = cv.getBoundingClientRect(); return [(e.clientX - r.left) * cv.width / r.width, (e.clientY - r.top) * cv.height / r.height]; };
+  cv.addEventListener('pointerdown', e => { down = true; cv.setPointerCapture(e.pointerId); [lx, ly] = pos(e); cx.strokeStyle = color; cx.lineWidth = size; cx.beginPath(); cx.moveTo(lx, ly); cx.lineTo(lx + .01, ly); cx.stroke(); drawn = true; });
+  cv.addEventListener('pointermove', e => { if (!down) return; const [x, y] = pos(e); cx.strokeStyle = color; cx.lineWidth = size; cx.beginPath(); cx.moveTo(lx, ly); cx.lineTo(x, y); cx.stroke(); lx = x; ly = y; });
+  ['pointerup', 'pointercancel'].forEach(t => cv.addEventListener(t, () => down = false));
+  $('#dcCols', m.el).addEventListener('click', e => { const b = e.target.closest('[data-c]'); if (!b) return; color = b.dataset.c; $$('[data-c]', m.el).forEach(x => x.classList.toggle('ring-2', x === b)); $$('[data-c]', m.el).forEach(x => x.classList.toggle('ring-sage', x === b)); });
+  $('#dcSize', m.el).oninput = e => size = +e.target.value;
+  $('#dcClear', m.el).onclick = () => { cx.clearRect(0, 0, 300, 300); drawn = false; };
+  $('#dcSave', m.el).onclick = () => {
+    if (!drawn) { toast('先画点什么吧 🎨'); return; }
+    const t = document.createElement('canvas'); t.width = t.height = 160; t.getContext('2d').drawImage(cv, 0, 0, 160, 160);
+    const url = t.toDataURL('image/png'); if (!IMG_RE.test(url)) return;
+    S.stickers.unshift(url); S.stickers = S.stickers.slice(0, 30); saveJ(K.stk, S.stickers); m.close(); toast('贴纸已收好 🎨'); if (cur === 'write') syncEditorFromDraft();
+  };
+}
+render.write = () => { syncEditorFromDraft(); };
+
+/* ===== 日记本 ===== */
+function renderList() {
+  const f = S.filter, all = Engine.sorted(), res = Engine.search(f);
+  const tagCount = {}; all.forEach(e => e.meta.tags.forEach(t => tagCount[t] = (tagCount[t] || 0) + 1));
+  const tags = Object.entries(tagCount).sort((a, b) => b[1] - a[1]).slice(0, 20);
+  let lastMonth = '';
+  const listHtml = res.map((e, i) => {
+    const m = e.meta;
+    const mo = m.date.slice(0, 7);
+    let sep = '';
+    if (mo !== lastMonth) {
+      lastMonth = mo;
+      sep = `<div class="col-span-full mt-3 mb-1 flex items-center gap-3 px-1">
+        <span class="text-sm font-semibold text-ink/65">${m.date.slice(0,4)} 年 ${+m.date.slice(5,7)} 月</span>
+        <span class="flex-1 h-px bg-line/80"></span>
+      </div>`;
+    }
+    const dNum = +m.date.slice(8, 10);
+    const weatherChar = m.weather ? WMAP[m.weather][1] : '';
+    const moodChar = m.mood ? MMAP[m.mood][1] : '';
+    const tagHtml = m.tags.map(t => `<span class="rounded-full bg-sand/35 px-2 py-0.5 text-xs">#${esc(t)}</span>`).join('');
+    const card = `<article data-act="open-entry" data-id="${m.id}" class="card card-hover ${S.justSaved === m.id ? 'new-card' : 'slide-up'} flex overflow-hidden" style="--i:${Math.min(i, 10)}">
+      <div class="shrink-0 w-20 sm:w-24 flex flex-col items-center justify-start pt-5 pb-4 bg-sand/20 border-r border-line/60">
+        <span class="text-3xl font-bold leading-none">${dNum}</span>
+        <span class="mt-1.5 text-[10px] text-ink/55">${+m.date.slice(5,7)} 月</span>
+        <span class="text-[10px] text-ink/55">周${WD[new Date(m.date).getDay()]}</span>
+        ${moodChar ? `<span class="mt-2 text-xl">${moodChar}</span>` : ''}
+      </div>
+      <div class="min-w-0 flex-1 p-4 sm:p-5">
+        <div class="flex items-start justify-between gap-2">
+          <h3 class="text-lg font-bold truncate">${m.quote ? '<span class="text-ink/25 mr-1">❝</span>' : ''}${esc(m.title || '无题')}</h3>
+          ${weatherChar ? `<span class="shrink-0 text-base">${weatherChar}</span>` : ''}
+        </div>
+        <p class="font-hand mt-2 line-clamp-3 text-[0.95rem] leading-7 text-ink/70">${snippet(e.text, 120) || '（只有贴纸）'}</p>
+        <div class="mt-3 flex flex-wrap items-center gap-1.5">
+          ${tagHtml}
+          <span class="sub ml-auto">${m.words} 字</span>
+        </div>
+      </div>
+    </article>`;
+    return sep + card;
+  }).join('');
+  $('#pg-list').innerHTML = `
+  <div class="card slide-up p-4 sm:p-5"><div class="flex flex-wrap gap-2"><input id="fQ" class="field min-w-[12rem] flex-1" placeholder="🔍 搜索标题、正文、标签、日期…" value="${esc(f.q)}"><input id="fDate" type="date" class="field w-auto" value="${esc(f.date)}"><button class="btn btn-ghost" data-act="clear-filter">清除</button></div>
+    ${tags.length ? `<div class="mt-3 flex flex-wrap gap-2">${tags.map(([t, n]) => `<button class="chip" aria-pressed="${f.tag === t}" data-act="tag-filter" data-t="${esc(t)}">#${esc(t)} <span class="text-ink/40">${n}</span></button>`).join('')}</div>` : ''}</div>
+  <div class="sub mt-4 px-1">共 ${res.length} 篇${res.length !== all.length ? `（全部 ${all.length} 篇）` : ''}</div>
+  <div id="listBody" class="mt-3 grid gap-4 md:grid-cols-2 xl:grid-cols-3">${res.length ? listHtml
+    : `<div class="card col-span-full p-10 text-center"><div class="text-4xl">🍃</div><p class="mt-3 text-ink/70">${all.length ? '没有找到符合条件的日记' : '这里还空空的，写下第一篇吧'}</p><button class="btn btn-primary mt-4" data-act="write-today">去写日记</button></div>`}</div>`;
+  S.justSaved = null;
+  let t; $('#fQ').addEventListener('input', e => { clearTimeout(t); const v = e.target.value; t = setTimeout(() => { S.filter.q = v; const pos = v.length; renderList(); const i = $('#fQ'); i.focus(); i.setSelectionRange(pos, pos); }, 180); });
+  $('#fDate').addEventListener('change', e => { S.filter.date = e.target.value; renderList(); });
+}
+
+/* ===== 阅读 ===== */
+function openReader(id) {
+  const e = Engine.entries.get(id); if (!e) return; const m = e.meta, cs = getComputedStyle(document.documentElement);
+  const v = n => 'rgb(' + cs.getPropertyValue(n).trim().split(/\s+/).join(',') + ')';
+  const doc = `<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC&display=swap"><style>html,body{margin:0}body{padding:4px 6px 24px;font:17px/2.15 'Noto Serif SC','Songti SC',STSong,serif;color:${v('--ink')};background:transparent;word-break:break-word;white-space:pre-wrap}img{height:60px;vertical-align:middle;margin:0 2px}</style></head><body>${sanitize(e.html)}</body></html>`;
+  const quoteHtml = m.quote
+    ? `<blockquote class="mt-3 rounded-2xl bg-sand/20 border border-dashed border-sand/80 pl-4 pr-4 py-3">
+        <p class="font-hand text-[15px] leading-7 text-ink/80">“${esc(m.quote.text)}”</p>
+        ${m.quote.from ? `<div class="sub mt-1 text-right">—— ${esc(m.quote.from)}</div>` : ''}
+      </blockquote>`
+    : '';
+  const mo = modal(`<div class="flex items-start justify-between gap-3"><div class="min-w-0 flex-1"><div class="sub">${cnDate(m.date)} · ${m.words} 字</div><h3 class="mt-1 text-2xl font-bold">${esc(m.title || '无题')}</h3>${quoteHtml}</div><div class="text-3xl leading-none">${emo(m)}</div></div>
+    <iframe id="rdFrame" sandbox="" referrerpolicy="no-referrer" class="mt-4 h-[46vh] w-full rounded-2xl border border-line/60 bg-paper/40"></iframe>
+    <div class="mt-3 flex flex-wrap gap-1.5">${m.tags.map(t => `<span class="rounded-full bg-sand/35 px-2 py-0.5 text-xs">#${esc(t)}</span>`).join('')}</div>
+    <div class="mt-5 flex flex-wrap justify-end gap-2"><button class="btn btn-ghost" data-r="hist">🕘 历史版本</button><button class="btn btn-danger" data-r="del">删除</button><button class="btn btn-primary" data-r="edit">编辑</button></div>`, { wide: true });
+  $('#rdFrame', mo.el).srcdoc = doc;
+  mo.el.addEventListener('click', async ev => {
+    const b = ev.target.closest('[data-r]'); if (!b) return;
+    if (b.dataset.r === 'edit') startEdit(id);
+    if (b.dataset.r === 'hist') openHistory(id);
+    if (b.dataset.r === 'del' && await confirmDlg('删除这篇日记？', '它会先进入回收站，30 天内可以随时找回。', '移入回收站', true)) { Engine.remove(id); mo.close(); toast('已移入回收站 🗑️'); go(cur); }
+  });
+}
+function openHistory(id) {
+  const vs = Engine.versions(id), lab = { create: '创建', update: '修改', restore: '恢复' };
+  const mo = modal(`<h3 class="h2">历史版本</h3><p class="sub mt-1">保留最近 7 天的每一次保存，可一键回到任意版本</p>
+    <div class="mt-4 space-y-2">${vs.length ? vs.map((x, i) => `<div class="flex items-center gap-3 rounded-2xl border border-line/70 p-3"><div class="min-w-0 flex-1"><div class="text-sm font-semibold">${new Date(x.t).toLocaleString('zh-CN', { hour12: false })} · ${lab[x.type] || x.type}${i === 0 ? '（最新）' : ''}</div><div class="font-hand mt-0.5 truncate text-xs text-ink/60">${esc(x.u.meta.title || '无题')} — ${snippet(htmlToText(x.u.html), 40)}</div></div>${i ? `<button class="btn btn-ghost !px-3 !py-1.5" data-t="${x.t}">恢复</button>` : ''}</div>`).join('') : '<p class="sub py-6 text-center">暂无历史版本</p>'}</div>
+    <div class="mt-5 text-right"><button class="btn btn-ghost" data-close>关闭</button></div>`, { wide: true });
+  mo.el.addEventListener('click', ev => { const b = ev.target.closest('[data-t]'); if (!b) return; if (Engine.restoreVersion(id, +b.dataset.t)) { toast('已恢复到所选版本 🕘'); mo.close(); modals.slice().forEach(x => x.close()); go(cur); } });
+}
+
+/* ===== 统计 ===== */
+function lvl(w, n) { return !n ? 0 : w < 80 ? 1 : w < 250 ? 2 : w < 500 ? 3 : 4; }
+function heatYearHTML(year, by) {
+  const first = new Date(year, 0, 1), last = new Date(year, 11, 31), off = (first.getDay() + 6) % 7, cells = []; const today = ymd(new Date());
+  for (let i = 0; i < off; i++) cells.push(null);
+  for (let d = new Date(first); d <= last; d.setDate(d.getDate() + 1)) { const s = ymd(d), v = by.get(s) || { n: 0, w: 0 }; cells.push({ s, ...v }); }
+  const cols = Math.ceil(cells.length / 7); let lab = '';
+  for (let m = 0; m < 12; m++) { const idx = off + Math.round((new Date(year, m, 1) - first) / DAY); lab += `<span style="grid-column:${Math.floor(idx / 7) + 1}" class="whitespace-nowrap">${m + 1}月</span>`; }
+  return `<div class="overflow-x-auto pb-2"><div style="--cell:14px;width:max-content"><div class="sub mb-1 grid" style="grid-template-columns:repeat(${cols},var(--cell));column-gap:3px">${lab}</div>
+    <div style="display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,var(--cell));grid-auto-columns:var(--cell);gap:3px">${cells.map(c => c ? `<div class="hm l${lvl(c.w, c.n)} ${c.n ? 'has' : ''} ${c.s === today ? 'today' : ''}" ${c.n ? `data-act="hm-day" data-d="${c.s}"` : ''} title="${c.s} · ${c.n} 篇 · ${c.w} 字"></div>` : '<div></div>').join('')}</div></div></div>`;
+}
+function heatMonthHTML(year, month, by) {
+  const first = new Date(year, month, 1), dim = new Date(year, month + 1, 0).getDate(), off = (first.getDay() + 6) % 7, today = ymd(new Date());
+  let h = '';
+  for (let i = 0; i < off; i++) h += '<div></div>';
+  for (let d = 1; d <= dim; d++) {
+    const s = `${year}-${pad(month + 1)}-${pad(d)}`, v = by.get(s) || { n: 0, w: 0 };
+    const lv = lvl(v.w, v.n), isToday = s === today;
+    const headCls = lv >= 3 ? 'text-white' : 'text-ink/80';
+    const subCls = lv >= 3 ? 'text-white/80' : 'text-ink/45';
+    const inner = `<div class="text-sm font-semibold leading-none ${headCls}">${d}</div>` +
+      (v.n ? `<div class="text-[9px] leading-3 mt-0.5 ${subCls}">${v.w}字</div>` : '');
+    h += `<div class="hm l${lv} ${v.n ? 'has' : ''} ${isToday ? 'today' : ''} aspect-square flex flex-col items-center justify-center" ${v.n ? `data-act="hm-day" data-d="${s}"` : ''} title="${s} · ${v.n} 篇 · ${v.w} 字" style="border-radius:10px">${inner}</div>`;
+  }
+  return `<div class="mx-auto max-w-lg"><div class="sub mb-2 grid grid-cols-7 gap-1.5 text-center">${'一二三四五六日'.split('').map(x => `<span>${x}</span>`).join('')}</div><div class="grid grid-cols-7 gap-1.5">${h}</div></div>`;
+}
+function pieHTML(counts, map, total) {
+  const ents = Object.entries(counts).sort((a, b) => b[1] - a[1]); if (!ents.length) return '<p class="sub py-10 text-center">选择心情后，这里会长出一张情绪地图 🌱</p>';
+  const cx = 110, cy = 110, R = 90, r = 54, pt = (a, rad) => [cx + rad * Math.cos(a), cy + rad * Math.sin(a)]; let a0 = -Math.PI / 2, paths = '';
+  ents.forEach(([k, n], i) => {
+    const frac = n / total, a1 = a0 + frac * Math.PI * 2 - (ents.length > 1 ? .02 : 0), big = a1 - a0 > Math.PI ? 1 : 0, col = PALETTE[i % PALETTE.length];
+    if (ents.length === 1) paths += `<path class="slice" d="M${cx},${cy - R} A${R},${R} 0 1 1 ${cx - .01},${cy - R} L${cx - .01},${cy - r} A${r},${r} 0 1 0 ${cx},${cy - r}Z" fill="${col}"><title>${map[k][2]} ${n}</title></path>`;
+    else { const [x0, y0] = pt(a0, R), [x1, y1] = pt(a1, R), [x2, y2] = pt(a1, r), [x3, y3] = pt(a0, r); paths += `<path class="slice" d="M${x0},${y0} A${R},${R} 0 ${big} 1 ${x1},${y1} L${x2},${y2} A${r},${r} 0 ${big} 0 ${x3},${y3}Z" fill="${col}"><title>${map[k][2]} ${n} 篇</title></path>`; }
+    a0 += frac * Math.PI * 2;
+  });
+  return `<div class="flex flex-wrap items-center justify-center gap-6"><svg viewBox="0 0 220 220" class="w-48 shrink-0" style="animation:pop .8s ease both">${paths}<text x="110" y="106" text-anchor="middle" font-size="26" font-weight="700" fill="currentColor">${total}</text><text x="110" y="128" text-anchor="middle" font-size="11" fill="currentColor" opacity=".55">条心情</text></svg>
+    <ul class="space-y-1.5 text-sm">${ents.map(([k, n], i) => `<li class="flex items-center gap-2"><span class="h-3 w-3 rounded-full" style="background:${PALETTE[i % PALETTE.length]}"></span>${map[k][1]} ${map[k][2]}<span class="sub ml-1">${n} · ${Math.round(n / total * 100)}%</span></li>`).join('')}</ul></div>`;
+}
+function barsHTML(counts) {
+  const ents = WEATHER.map(w => [w, counts[w[0]] || 0]).filter(x => x[1]); if (!ents.length) return '<p class="sub py-10 text-center">记录天气后，这里会出现你的天气图谱 ⛅</p>';
+  const max = Math.max(...ents.map(x => x[1]));
+  return `<div class="space-y-3">${ents.sort((a, b) => b[1] - a[1]).map(([w, n], i) => `<div class="flex items-center gap-3"><span class="w-16 shrink-0 text-sm">${w[1]} ${w[2]}</span><div class="h-4 flex-1 overflow-hidden rounded-full bg-line/60"><div class="bar-fill h-full rounded-full" data-w="${n / max * 100}" style="width:0;background:${PALETTE[i % PALETTE.length]}"></div></div><span class="sub w-8 text-right">${n}</span></div>`).join('')}</div>`;
+}
+function hoursHTML(h) {
+  const max = Math.max(1, ...h); return `<div class="flex h-32 items-end gap-[3px]">${h.map((n, i) => `<div class="flex flex-1 flex-col items-center justify-end" title="${i}:00 · ${n} 篇"><div class="vbar w-full rounded-t-md ${n === max && n ? 'bg-clay' : 'bg-sage/55'}" data-h="${n / max * 100}" style="height:0"></div></div>`).join('')}</div><div class="sub mt-1 flex justify-between"><span>0时</span><span>6时</span><span>12时</span><span>18时</span><span>23时</span></div>`;
+}
+function trendHTML(year) {
+  const data = Array(12).fill(0); Engine.entries.forEach(e => { if (e.meta.date.startsWith(year + '-')) data[+e.meta.date.slice(5, 7) - 1] += e.meta.words; });
+  const W = 560, H = 190, L = 34, Rr = 14, T = 16, B = 28, max = Math.max(100, ...data), x = i => L + i * (W - L - Rr) / 11, y = v => T + (H - T - B) * (1 - v / max);
+  const pts = data.map((v, i) => [x(i), y(v)]); let d = `M${pts[0][0]},${pts[0][1]}`;
+  for (let i = 0; i < 11; i++) { const p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2, cl = v => Math.max(T, Math.min(H - B, v)); d += ` C${p1[0] + (p2[0] - p0[0]) / 6},${cl(p1[1] + (p2[1] - p0[1]) / 6)} ${p2[0] - (p3[0] - p1[0]) / 6},${cl(p2[1] - (p3[1] - p1[1]) / 6)} ${p2[0]},${p2[1]}`; }
+  const area = `${d} L${pts[11][0]},${H - B} L${pts[0][0]},${H - B}Z`;
+  return `<svg viewBox="0 0 ${W} ${H}" class="w-full"><defs><linearGradient id="tg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgb(var(--sage))" stop-opacity=".4"/><stop offset="1" stop-color="rgb(var(--sage))" stop-opacity="0"/></linearGradient></defs>
+    ${[0, .5, 1].map(f => `<line x1="${L}" x2="${W - Rr}" y1="${y(max * f)}" y2="${y(max * f)}" stroke="rgb(var(--line))" stroke-dasharray="3 4"/><text x="${L - 6}" y="${y(max * f) + 4}" text-anchor="end" font-size="10" fill="currentColor" opacity=".5">${Math.round(max * f)}</text>`).join('')}
+    <path d="${area}" fill="url(#tg)" style="animation:pageIn 1.4s ease both"/><path id="trendLine" d="${d}" fill="none" stroke="rgb(var(--sage))" stroke-width="3" stroke-linecap="round"/>
+    ${pts.map((p, i) => `<circle cx="${p[0]}" cy="${p[1]}" r="4" fill="rgb(var(--card))" stroke="rgb(var(--clay))" stroke-width="2"><title>${i + 1}月 · ${data[i]} 字</title></circle><text x="${p[0]}" y="${H - 8}" text-anchor="middle" font-size="10" fill="currentColor" opacity=".55">${i + 1}月</text>`).join('')}</svg>`;
+}
+function renderStats() {
+  const st = stats(), yr = S.year, mth = S.month;
+  $('#pg-stats').innerHTML = `
+  <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">${[['日记总数', st.total, '篇', '📚'], ['连续书写', st.streak, `天 · 最长 ${st.best} 天`, '🔥'], ['日均字数', st.avg, `字 · 共 ${st.words.toLocaleString()} 字`, '✍️']].map((c, i) => `<div class="card slide-up p-5" style="--i:${i}"><div class="sub">${c[3]} ${c[0]}</div><div class="mt-2 text-3xl font-bold"><span data-count="${c[1]}">0</span></div><div class="sub mt-1">${c[2]}</div></div>`).join('')}
+    <div class="card slide-up p-5" style="--i:3"><div class="sub">🕰️ 最常书写时段</div><div class="mt-2 text-3xl font-bold">${st.topHour < 0 ? '—' : pad(st.topHour) + ':00'}</div><div class="sub mt-1">${st.topHour < 0 ? '还没有数据' : periodName(st.topHour)}</div></div></div>
+  <div class="card slide-up mt-5 p-5 sm:p-6" style="--i:4"><div class="flex flex-wrap items-center justify-between gap-2"><h3 class="h2">书写热力图</h3>
+    <div class="flex items-center gap-2"><div class="flex rounded-full bg-ink/5 p-0.5 text-sm"><button class="rounded-full px-3 py-1 transition-all ${S.heat === 'year' ? 'bg-card shadow' : ''}" data-act="hm-mode" data-m="year">年</button><button class="rounded-full px-3 py-1 transition-all ${S.heat === 'month' ? 'bg-card shadow' : ''}" data-act="hm-mode" data-m="month">月</button></div>
+    <button class="tbtn" data-act="hm-prev">‹</button><span class="min-w-[4.5rem] text-center text-sm font-semibold">${S.heat === 'year' ? yr + ' 年' : `${yr}年${mth + 1}月`}</span><button class="tbtn" data-act="hm-next">›</button></div></div>
+    <div class="mt-4">${S.heat === 'year' ? heatYearHTML(yr, st.byDate) : heatMonthHTML(yr, mth, st.byDate)}</div>
+    <div class="sub mt-2 flex items-center justify-end gap-1">少 ${[0, 1, 2, 3, 4].map(l => `<span class="hm l${l} inline-block h-3 w-3"></span>`).join('')} 多</div></div>
+  <div class="mt-5 grid gap-5 lg:grid-cols-2">
+    <div class="card slide-up p-5 sm:p-6" style="--i:5"><h3 class="h2">心情分布</h3><div class="mt-4">${pieHTML(st.mood, MMAP, Object.values(st.mood).reduce((a, b) => a + b, 0))}</div></div>
+    <div class="card slide-up p-5 sm:p-6" style="--i:6"><h3 class="h2">天气图谱</h3><div class="mt-4">${barsHTML(st.weather)}</div></div>
+    <div class="card slide-up p-5 sm:p-6" style="--i:7"><h3 class="h2">书写时段</h3><p class="sub mb-3">按 24 小时统计你提笔的时刻</p>${hoursHTML(st.hours)}</div>
+    <div class="card slide-up p-5 sm:p-6" style="--i:8"><div class="flex items-center justify-between"><h3 class="h2">${yr} 年字数趋势</h3><span class="sub">按月累计</span></div><div class="mt-3">${trendHTML(yr)}</div></div></div>`;
+  countUp();
+  requestAnimationFrame(() => requestAnimationFrame(() => { $$('.bar-fill').forEach(b => b.style.width = b.dataset.w + '%'); $$('.vbar').forEach(b => b.style.height = b.dataset.h + '%'); }));
+  const tl = $('#trendLine'); if (tl) { const L = tl.getTotalLength(); tl.style.strokeDasharray = L; tl.style.strokeDashoffset = L; tl.getBoundingClientRect(); tl.style.transition = 'stroke-dashoffset 1.6s cubic-bezier(.2,.8,.2,1)'; tl.style.strokeDashoffset = 0; }
+}
+
+/* ===== 设置 / 备份 / 回收站 / 体检 / 版本回溯 ===== */
+const usageKB = () => { let n = 0; try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && k.startsWith('loog:')) n += (k.length + (localStorage.getItem(k) || '').length) * 2; } } catch {} return Math.round(n / 1024); };
+
+/* ★ 应用皮肤：先清空所有内联变量，再按 k 决定是否应用 custom，保证切换干净 */
+function applySkin(k) {
+  const root = document.documentElement;
+  SKIN_VARS.forEach(([key]) => root.style.removeProperty('--' + key));
+  if (k === 'custom') {
+    if (!S.customSkin || !Object.keys(S.customSkin).length) S.customSkin = getDefaultCustom();
+    Object.entries(S.customSkin).forEach(([key, v]) => root.style.setProperty('--' + key, hexToSpace(v)));
+  }
+  root.dataset.skin = k;
+  S.skin = k;
+  saveJ(K.set, { skin: k, custom: S.customSkin });
+}
+
+/* ★ 自定义配色：弹窗内预览，点"应用"才全局生效 */
+function customSkinModal() {
+  const temp = S.customSkin ? { ...S.customSkin } : getDefaultCustom();
+  const m = modal(`
+    <h3 class="h2">自定义配色</h3>
+    <p class="sub mt-1">调出属于你的纸张与墨色，上方小卡片实时预览，点“应用”后才会生效</p>
+    <div id="skinPreview" class="mt-4 rounded-2xl border border-line p-4" style="background:${temp.paper}">
+      <div class="rounded-xl p-3" style="background:${temp.card}">
+        <div class="text-sm font-semibold" style="color:${temp.ink}">${new Date().getMonth()+1} 月 ${new Date().getDate()} 日</div>
+        <div class="mt-1 text-xs" style="color:${temp.ink};opacity:.6">今天的天空很蓝，风也很轻。</div>
+        <div class="mt-2 inline-block rounded-full px-2 py-0.5 text-[10px]" style="background:${temp.sage}22;color:${temp.sage};border:1px solid ${temp.sage}55"># 心情</div>
+        <div class="mt-2 text-right text-[11px]" style="color:${temp.sage}">—— 附加的好句</div>
+      </div>
+    </div>
+    <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3">
+      ${SKIN_VARS.map(([k, name]) => `
+        <label class="flex items-center gap-2.5">
+          <input type="color" data-var="${k}" value="${temp[k]}" class="w-9 h-9 rounded-lg border border-line cursor-pointer shrink-0">
+          <div class="min-w-0 flex-1">
+            <div class="text-xs font-medium truncate">${name}</div>
+            <div class="text-[10px] font-mono text-ink/40" data-hex="${k}">${temp[k].toUpperCase()}</div>
+          </div>
+        </label>`).join('')}
+    </div>
+    <p class="mt-3 text-[11px] leading-5 text-ink/45">提示：文字墨色与纸张背景的对比度请自行把握，过浅的墨色会难以阅读。</p>
+    <div class="mt-4 flex flex-wrap justify-between gap-2">
+      <button class="btn btn-ghost" data-reset>恢复默认</button>
+      <div class="flex gap-2">
+        <button class="btn btn-ghost" data-close>取消</button>
+        <button class="btn btn-primary" data-save>应用</button>
+      </div>
+    </div>
+  `);
+
+  const prevPaper = $('#skinPreview', m.el);
+  const prevCard = prevPaper ? prevPaper.firstElementChild : null;
+  const updatePreview = () => {
+    if (!prevPaper || !prevCard) return;
+    prevPaper.style.background = temp.paper;
+    prevCard.style.background = temp.card;
+    const ch = prevCard.children;
+    if (ch[0]) ch[0].style.color = temp.ink;
+    if (ch[1]) ch[1].style.color = temp.ink;
+    if (ch[2]) { ch[2].style.background = temp.sage + '22'; ch[2].style.color = temp.sage; ch[2].style.borderColor = temp.sage + '55'; }
+    if (ch[3]) ch[3].style.color = temp.sage;
+  };
+
+  m.el.querySelectorAll('[data-var]').forEach(input => {
+    input.addEventListener('input', () => {
+      const k = input.dataset.var;
+      temp[k] = input.value;
+      const hexEl = m.el.querySelector(`[data-hex="${k}"]`);
+      if (hexEl) hexEl.textContent = input.value.toUpperCase();
+      updatePreview();
+    });
+  });
+
+  m.el.querySelector('[data-reset]').onclick = () => {
+    const def = getDefaultCustom();
+    Object.entries(def).forEach(([k, v]) => {
+      temp[k] = v;
+      const inp = m.el.querySelector(`[data-var="${k}"]`);
+      const hexEl = m.el.querySelector(`[data-hex="${k}"]`);
+      if (inp) inp.value = v;
+      if (hexEl) hexEl.textContent = v.toUpperCase();
+    });
+    updatePreview();
+  };
+
+  m.el.querySelector('[data-save]').onclick = () => {
+    S.customSkin = { ...temp };
+    applySkin('custom');
+    m.close();
+    toast('配色已应用 🎨');
+    if (cur === 'settings') renderSettings();
+  };
+}
+
+/* ★ 自定义按钮：用当前自定义配色（或默认暖纸）生成 2×2 色卡 */
+function skinCustomButtonHTML() {
+  const active = S.skin === 'custom';
+  return `<button data-act="skin-custom" class="flex flex-col items-center gap-1.5 rounded-2xl border p-3 text-xs transition-all duration-300 hover:-translate-y-1 ${active ? 'border-sage bg-sage/15' : 'border-line'}">
+    <span class="h-10 w-14 rounded-xl border border-ink/10 overflow-hidden grid grid-cols-2 grid-rows-2 shadow-sm">
+      <span style="background:${customColor('paper')}"></span>
+      <span style="background:${customColor('card')}"></span>
+      <span style="background:${customColor('sage')}"></span>
+      <span style="background:${customColor('ink')}"></span>
+    </span>
+    自定义
+  </button>`;
+}
+
+function renderSettings() {
+  const tr = Engine.trashList(), sec = (t, b, i) => `<div class="card slide-up p-5 sm:p-6" style="--i:${i}"><h3 class="h2">${t}</h3><div class="mt-3">${b}</div></div>`;
+  const kb = usageKB(), pctUse = Math.min(100, kb / 5120 * 100);
+  const hkModes = [['online','在线一言','从 v1.hitokoto.cn 实时获取'],['bundle','语句库','从 jsDelivr 加载一言开源语句库'],['local','内置语录','使用应用内置的短句']];
+  const damaged = Engine.damaged.length;
+  const hasCustom = !!(S.customSkin && Object.keys(S.customSkin).length);
+  $('#pg-settings').innerHTML = `<div class="grid gap-5 lg:grid-cols-2">
+    ${sec('笔记本皮肤', `<div class="flex flex-wrap gap-3">${SKINS.map(([k, n, c]) => `<button data-act="skin" data-k="${k}" class="flex flex-col items-center gap-1.5 rounded-2xl border p-3 text-xs transition-all duration-300 hover:-translate-y-1 ${S.skin === k ? 'border-sage bg-sage/15' : 'border-line'}"><span class="h-10 w-14 rounded-xl border border-ink/10" style="background:${c}"></span>${n}</button>`).join('')}
+      ${skinCustomButtonHTML()}
+    </div>
+    ${S.skin === 'custom' && hasCustom ? `<div class="mt-3 flex flex-wrap items-center gap-2"><span class="sub">当前配色</span>${Object.entries(S.customSkin).map(([k, v]) => `<span class="w-4 h-4 rounded-full border border-ink/10" style="background:${v}" title="${k}"></span>`).join('')}<button data-act="skin-custom" class="sub hover:text-ink underline ml-1">编辑</button></div>` : ''}`, 0)}
+    ${sec('每日一句来源', `<div class="flex flex-wrap gap-2">${hkModes.map(([k, n, d]) => `<button data-act="hk-mode" data-m="${k}" class="flex flex-col items-start rounded-2xl border p-3 text-left text-xs transition-all duration-300 hover:-translate-y-1 ${S.hitokotoMode === k ? 'border-sage bg-sage/15' : 'border-line'}"><span class="font-semibold">${n}</span><span class="sub mt-0.5">${d}</span></button>`).join('')}</div>
+      <p class="sub mt-3 leading-6">无论在线一言还是语句库，都只取与日记氛围相符的分类：<b>${HK_TYPE_DESC}</b>。在线请求会一次带上四类参数；语句库则从这四类文件中随机挑选并加载。</p>
+      <p class="sub mt-2 leading-6">首页每日一句下方的 ♡ 可把当前句子作为“附加好句”带入书写页；附加只读、可删除，不会写入正文。</p>`, 1)}
+    ${sec('备份与迁移', `<p class="sub leading-6">.loog 是本应用的私有加密格式：一个文件即可带走全部日记、皮肤、贴纸与统计。</p>
+      <div class="mt-3 flex flex-wrap gap-2">
+        <button class="btn btn-primary" data-act="export-loog">🔐 完整导出</button>
+        <button class="btn btn-sage" data-act="export-delta">🔄 增量更新已有文件</button>
+        <button class="btn btn-ghost" data-act="import-loog">📥 导入（可选日期范围）</button>
+        <button class="btn btn-ghost" data-act="export-txt">📄 导出纯文本</button>
+      </div>
+      <p class="sub mt-3 leading-6">「增量更新」会把当前库里新增/改动的日记差量合并进已有的 .loog，原文件里的旧日记不会丢失；合并后可把较早的日记从浏览器本地释放，腾出存储空间。</p>`, 2)}
+    ${sec(`回收站 <span class="sub">(${tr.length})</span>`, tr.length ? `<div class="space-y-2">${tr.map(t => `<div class="flex items-center gap-2 rounded-2xl border border-line/70 p-3"><div class="min-w-0 flex-1"><div class="truncate text-sm font-semibold">${esc(t.meta.title || '无题')}</div><div class="sub">${t.meta.date} · 删除于 ${new Date(t.at).toLocaleDateString('zh-CN')}</div></div><button class="btn btn-ghost !px-3 !py-1.5" data-act="trash-restore" data-id="${t.id}">恢复</button><button class="btn btn-ghost !px-3 !py-1.5 text-rose" data-act="trash-purge" data-id="${t.id}">彻底删除</button></div>`).join('')}</div><button class="btn btn-ghost mt-3" data-act="trash-empty">清空回收站</button>` : '<p class="sub py-4 text-center">回收站是空的，误删的日记会在这里保留 30 天</p>', 3)}
+    ${sec('数据体检', `<ul class="space-y-1.5 text-sm"><li>日记条目：${Engine.entries.size} 篇</li><li>本地占用：约 ${kb} KB（浏览器上限通常 5MB）</li><li>可回溯的编辑记录：${Engine.ops.length} 条（保留 7 天）</li><li class="${damaged ? 'text-rose' : ''}">已知损坏条目：${damaged} 篇${Engine.repaired ? `（本次启动已自动修复 ${Engine.repaired} 篇）` : ''}</li></ul>
+      <div class="mt-3"><div class="h-2 overflow-hidden rounded-full bg-line/60"><div class="h-full rounded-full ${pctUse > 80 ? 'bg-rose' : 'bg-clay'}" style="width:${pctUse}%;transition:width .8s ease"></div></div><div class="sub mt-1">已使用约 ${Math.round(pctUse)}% · 接近上限时请先增量导出，再释放本地空间</div></div>
+      <div class="mt-3 flex flex-wrap gap-2"><button class="btn btn-sage" data-act="scan-all">🩺 扫描全部分片</button><button class="btn btn-ghost" data-act="release-space">📦 释放本地空间</button>${damaged ? '<button class="btn btn-ghost" data-act="clean-damaged">清理已知损坏</button>' : ''}<button class="btn btn-ghost text-rose" data-act="wipe">清空全部本地数据</button></div>
+      <div id="scanResult" class="mt-2"></div>`, 4)}
+    ${sec('版本回溯', `<p class="sub leading-6">每次保存修改都会留下快照，保留最近 7 天。选中一篇日记即可查看并回到任意历史版本（含附加好句）。</p>
+      <select id="vSelect" class="field w-full mt-3"><option value="">— 选择一篇日记 —</option></select>
+      <div id="vList" class="mt-3 space-y-2"></div>`, 5)}
+    <div class="lg:col-span-2">${sec('关于隐私与安全', `<ul class="sub list-disc space-y-1.5 pl-5 leading-6"><li>所有内容只存在你的浏览器里，没有任何服务器；本页只会从 CDN 加载 Tailwind 与字体。</li><li>本地存储采用「元数据头 / 内容块 / 校验尾」分块并做轻度混淆，仅能防误读、<b>不等于加密</b>；任何能打开这台设备浏览器的人仍可能读到内容。需要保密请使用设备锁屏，并只通过 .loog 带密码导出备份。</li><li>.loog 的机密性来自 AES-256-GCM + PBKDF2（25 万次）；自定义魔数、乱序分块、S-box 混淆与双层哈希让文件结构无法被通用工具识别并能发现篡改。<b>密码一旦遗忘无法找回</b>，请使用 8 位以上强密码。</li><li>增量备份按条目 id + 更新时间做差量合并，导入支持按日期范围筛选，避免每次搬动全部数据。</li><li>每日一句默认从一言 API 获取；失败时自动回退到语句库或内置语录，不会影响日记功能。来源限定为文学、诗词、原创、哲学四类，以匹配日记的文字氛围。</li><li>「附加好句」存于日记元数据的独立字段，只在阅读视图与编辑视图以只读引用呈现，不进入正文、不计入字数，可通过 × 移除。</li><li>自定义配色在弹窗内预览，点「应用」才会写入本地并生效；取消则完全不变。只改纸色、卡色、墨色、点缀与线条色，<code>sand / mist / plum</code> 等辅助色沿用预设，避免整页色彩失控。刷新页面后依然保留。</li><li>编辑器荧光笔只写入 rgb/hex 背景色，净化器仅保留合法背景色，从外部粘贴的花哨字体、字号、颜色会被一并剥离。</li><li>渲染使用白名单净化，阅读视图放在无脚本权限的沙箱 iframe 中，编辑区粘贴一律转为纯文本。</li></ul>`, 6)}</div></div>`;
+  bindVersionPanel();
+  const sr = $('#scanResult'); if (sr && damaged) renderScanResult({ total: Engine.ids.length, good: Engine.ids.length - damaged, bad: Engine.damaged.slice() });
+}
+function bindVersionPanel() {
+  const sel = $('#vSelect'); if (!sel) return;
+  const curVal = sel.value;
+  const all = Engine.sorted();
+  sel.innerHTML = '<option value="">— 选择一篇日记 —</option>' + all.map(e =>
+    `<option value="${e.meta.id}">${e.meta.date} · ${esc(e.meta.title || '无题')}</option>`).join('');
+  if (curVal) sel.value = curVal;
+  renderVersionList(sel.value);
+  sel.addEventListener('change', () => renderVersionList(sel.value));
+}
+function renderVersionList(id) {
+  const box = $('#vList'); if (!box) return;
+  if (!id) { box.innerHTML = '<p class="sub py-2">选择一篇日记查看历史版本</p>'; return; }
+  const vs = Engine.versions(id);
+  if (!vs.length) { box.innerHTML = '<p class="sub py-2">7 天内暂无历史版本</p>'; return; }
+  const lab = { create: '创建', update: '修改', restore: '恢复' };
+  box.innerHTML = vs.map((x, i) => {
+    const t = new Date(x.t).toLocaleString('zh-CN', { hour12: false });
+    const hasQuote = x.u.meta.quote ? '<span class="text-ink/40 ml-1" title="含附加好句">❝</span>' : '';
+    return `<div class="flex items-center gap-3 rounded-xl border border-line/70 p-3">
+      <div class="min-w-0 flex-1">
+        <div class="text-xs font-semibold">${t} · ${lab[x.type] || x.type}${i === 0 ? '（最新）' : ''}${hasQuote}</div>
+        <div class="sub mt-0.5 truncate">${esc(x.u.meta.title || '无题')} — ${snippet(htmlToText(x.u.html), 40)}</div>
+      </div>
+      ${i ? `<button class="btn btn-ghost !px-3 !py-1 !text-xs" data-act="restore-version" data-id="${id}" data-t="${x.t}">恢复</button>` : ''}
+    </div>`;
+  }).join('');
+}
+function renderScanResult(result) {
+  const box = $('#scanResult'); if (!box) return;
+  if (!result.bad.length) {
+    box.innerHTML = `<div class="mt-3 rounded-xl border border-sage/40 bg-sage/10 px-3 py-2 text-sm">✓ 扫描完成：${result.total} 篇日记全部通过「头 / 内容 / 校验尾」三重检查，未发现损坏。</div>`;
+    return;
+  }
+  const rows = result.bad.map(id => {
+    const e = Engine.entries.get(id);
+    const hasOps = Engine.ops.some(o => o.id === id && o.type !== 'delete' && Engine.unpack(o.s));
+    const label = e ? `${e.meta.date} · ${e.meta.title || '无题'}` : id;
+    return `<div class="flex items-center gap-2 rounded-xl border border-rose/30 bg-rose/5 p-2.5">
+      <div class="min-w-0 flex-1"><div class="text-xs truncate">${esc(label)}</div>
+        <div class="sub">${hasOps ? '可从历史记录恢复' : '无可用历史记录'}</div></div>
+      ${hasOps ? `<button class="btn btn-sage !px-3 !py-1 !text-xs" data-act="fix-entry" data-id="${id}">尝试修复</button>` : ''}
+      <button class="btn btn-ghost !px-3 !py-1 !text-xs text-rose" data-act="clean-entry" data-id="${id}">清理</button>
+    </div>`;
+  }).join('');
+  box.innerHTML = `<div class="mt-3 rounded-xl border border-rose/30 bg-rose/5 px-3 py-2 text-sm text-rose">检出 ${result.bad.length} 篇损坏条目（与其余数据隔离，互不影响）：</div>
+    <div class="mt-2 space-y-2">${rows}</div>`;
+}
+
+function download(name, data, type) { const a = document.createElement('a'), u = URL.createObjectURL(new Blob([data], { type })); a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 3000); }
+function exportTxt() {
+  if (!Engine.entries.size) { toast('还没有日记可以导出'); return; }
+  const list = Engine.sorted().reverse(), txt = list.map(e => {
+    const m = e.meta;
+    const q = m.quote ? `\n❝ 附加好句：${m.quote.text}${m.quote.from ? ' —— ' + m.quote.from : ''}\n` : '';
+    return `━━ ${cnDate(m.date)} ${m.weather ? '· ' + WMAP[m.weather][2] : ''} ${m.mood ? '· ' + MMAP[m.mood][2] : ''}${q}\n${m.title ? '【' + m.title + '】\n' : ''}\n${e.text}\n\n${m.tags.length ? '标签：' + m.tags.map(t => '#' + t).join(' ') + '\n' : ''}`;
+  }).join('\n\n');
+  download(`日记备份-${ymd(new Date())}.txt`, `Loog 私人日记 · 共 ${list.length} 篇 · 导出于 ${new Date().toLocaleString('zh-CN')}\n\n` + txt, 'text/plain;charset=utf-8'); toast('已导出纯文本备份 📄');
+}
+function buildPayload() { const st = stats(); return { app: 'loog', v: 2, exportedAt: Date.now(), skin: S.skin, custom: S.customSkin, entries: [...Engine.entries.values()].map(e => ({ meta: e.meta, html: e.html })), trash: Engine.trashList().map(t => ({ meta: t.meta, html: t.html, at: t.at })), todos: S.todos, stickers: S.stickers, stats: { total: st.total, words: st.words, streak: st.streak, longest: st.best, avg: st.avg, topHour: st.topHour, mood: st.mood, weather: st.weather } }; }
+async function exportLoog() {
+  if (!Engine.entries.size && !S.stickers.length) { toast('还没有内容可以导出'); return; }
+  const pw = await askPw('设置导出密码', '用于加密这份 .loog 备份。忘记后无法找回，请牢记。', true); if (!pw) return;
+  toast('正在加密封装…');
+  try { const buf = await LF.seal(buildPayload(), pw); download(`loog-${ymd(new Date()).replace(/-/g, '')}.loog`, buf, 'application/octet-stream'); toast('已导出加密备份 🔐'); } catch (e) { toast('导出失败：' + e.message); }
+}
+
+function pickFile(accept = '.loog') {
+  return new Promise(res => {
+    const inp = document.createElement('input');
+    inp.type = 'file'; inp.accept = accept; inp.style.display = 'none';
+    inp.onchange = () => { const f = inp.files && inp.files[0]; inp.remove(); res(f || null); };
+    document.body.appendChild(inp); inp.click();
+  });
+}
+function mergePayload(base, curPayload) {
+  const map = new Map();
+  (base.entries || []).forEach(it => { if (it && it.meta && typeof it.meta.id === 'string' && typeof it.html === 'string') map.set(it.meta.id, it); });
+  let add = 0, upd = 0, keep = 0;
+  (curPayload.entries || []).forEach(it => {
+    if (!it || !it.meta || typeof it.meta.id !== 'string' || typeof it.html !== 'string') return;
+    const old = map.get(it.meta.id);
+    if (!old) { map.set(it.meta.id, it); add++; }
+    else if ((+it.meta.updated || 0) > (+old.meta.updated || 0)) { map.set(it.meta.id, it); upd++; }
+    else keep++;
+  });
+  const tmap = new Map();
+  (base.trash || []).forEach(t => { if (t && t.meta && t.meta.id) tmap.set(t.meta.id, t); });
+  (curPayload.trash || []).forEach(t => { if (t && t.meta && t.meta.id) { const o = tmap.get(t.meta.id); if (!o || (+t.at || 0) > (+o.at || 0)) tmap.set(t.meta.id, t); } });
+  const todos = [...(base.todos || [])];
+  (curPayload.todos || []).forEach(t => { if (t && t.id && !todos.some(x => x.id === t.id)) todos.push(t); });
+  const stickers = [...new Set([...(base.stickers || []), ...(curPayload.stickers || [])])].slice(0, 30);
+  return {
+    payload: {
+      app: 'loog', v: 2, exportedAt: Date.now(),
+      skin: base.skin || curPayload.skin,
+      custom: base.custom || curPayload.custom,
+      entries: [...map.values()].sort((a, b) => (b.meta.date || '').localeCompare(a.meta.date || '')),
+      trash: [...tmap.values()], todos, stickers,
+      stats: curPayload.stats,
+      mergedFrom: { base: base.exportedAt || null, at: Date.now() }
+    },
+    add, upd, keep, total: map.size
+  };
+}
+async function exportDelta() {
+  const file = await pickFile();
+  if (!file) return;
+  const pw = await askPw('增量更新已有备份', `将把当前数据库的差量合并进「${file.name}」。请先输入该文件的原密码（合并结果也用同一密码加密）。`, false);
+  if (!pw) return;
+  toast('正在解密已有备份…');
+  let base;
+  try { base = await LF.open(await file.arrayBuffer(), pw); }
+  catch (e) { toast('无法打开该文件：' + e.message); return; }
+  if (!base || base.app !== 'loog' || !Array.isArray(base.entries)) { toast('这不是有效的 Loog 备份文件'); return; }
+  const m = mergePayload(base, buildPayload());
+  const ok = await confirmDlg('确认合并',
+    `原文件 ${base.entries.length} 篇 → 合并后 ${m.total} 篇。本次新增 ${m.add} 篇、更新 ${m.upd} 篇、保持不变 ${m.keep} 篇。\n\n合并结果会下载为同名文件，浏览器通常会保存为「${file.name} (1)」，请用它覆盖原文件。`,
+    '生成新文件');
+  if (!ok) return;
+  toast('正在加密合并结果…');
+  try {
+    const buf = await LF.seal(m.payload, pw);
+    download(file.name, buf, 'application/octet-stream');
+    toast(`已生成合并备份（${m.total} 篇）🔄`);
+    setTimeout(() => releaseModal(file.name), 900);
+  } catch (e) { toast('导出失败：' + e.message); }
+}
+function releaseModal(fname) {
+  const all = [...Engine.entries.values()];
+  if (!all.length) { toast('本地没有可释放的日记'); return; }
+  const dates = all.map(e => e.meta.date).sort();
+  const minD = dates[0], maxD = dates[dates.length - 1];
+  const defD = ymd(new Date(Date.now() - 30 * DAY));
+  const start = defD < minD ? minD : (defD > maxD ? maxD : defD);
+  const m = modal(`<h3 class="h2">释放本地空间</h3>
+    <p class="sub mt-1">合并后的 .loog 文件已包含全部日记。可以顺便把较早的日记从浏览器里移除，腾出存储空间；需要时重新导入即可。</p>
+    <div class="mt-4 rounded-2xl bg-rose/10 p-3 text-xs leading-6 text-ink/75">⚠️ 请先确认「${esc(fname)}」已经完整保存到你的设备。释放后本机将无法再看到这些日记，直到你重新导入备份。</div>
+    <label class="mt-4 block"><span class="sub">释放此日期（含）之前的日记</span>
+      <input type="date" id="relDate" class="field mt-1 w-full" value="${start}" min="${minD}" max="${maxD}"></label>
+    <p id="relPreview" class="mt-3 rounded-2xl border border-line/70 bg-paper/50 p-3 text-sm leading-6"></p>
+    <label class="mt-3 flex items-start gap-2 text-sm"><input type="checkbox" id="relOk" class="mt-1 accent-[rgb(var(--sage))]"><span>我确认备份文件已保存，并同意从本机移除这些日记</span></label>
+    <div class="mt-5 flex justify-end gap-2"><button class="btn btn-ghost" data-close>暂不释放</button><button class="btn btn-danger" id="relGo" disabled>释放</button></div>`);
+  const calc = () => {
+    const d = $('#relDate', m.el).value || minD;
+    const sel = all.filter(e => e.meta.date <= d);
+    $('#relPreview', m.el).innerHTML = sel.length
+      ? `将移除 <b>${sel.length}</b> 篇日记，本地保留 <b>${all.length - sel.length}</b> 篇。`
+      : '所选范围内没有日记，无需释放。';
+    $('#relGo', m.el).disabled = !sel.length;
+    return { d, sel };
+  };
+  $('#relDate', m.el).addEventListener('change', calc);
+  $('#relOk', m.el).addEventListener('change', e => { $('#relGo', m.el).disabled = !e.target.checked || !calc().sel.length; });
+  $('#relGo', m.el).onclick = () => {
+    if (!$('#relOk', m.el).checked) { toast('请先勾选确认'); return; }
+    const { d, sel } = calc();
+    let n = 0;
+    sel.forEach(e => { if (Engine.release(e.meta.id)) n++; });
+    let tn = 0;
+    Object.keys(Engine.trash).forEach(id => { const u = Engine.unpack(Engine.trash[id].p); if (u && u.meta.date <= d) { delete Engine.trash[id]; tn++; } });
+    saveJ(K.trash, Engine.trash);
+    m.close();
+    toast(`已释放 ${n} 篇${tn ? ` 与 ${tn} 项回收站内容` : ''}，本地更轻盈了 🍃`);
+    go(cur);
+  };
+  calc();
+}
+function applyImport(p, opt = {}) {
+  if (!p || p.app !== 'loog' || !Array.isArray(p.entries)) throw new Error('文件内容结构不正确');
+  const from = opt.from || '0000-01-01', to = opt.to || '9999-12-31';
+  let add = 0, upd = 0, skip = 0, out = 0;
+  for (const it of p.entries) {
+    if (!it || !it.meta || typeof it.html !== 'string') continue;
+    const meta = normMeta(it.meta), html = sanitize(it.html);
+    meta.words = countWords(htmlToText(html));
+    if (meta.date < from || meta.date > to) { out++; continue; }
+    const curE = Engine.entries.get(meta.id);
+    if (curE && curE.meta.updated >= meta.updated) { skip++; continue; }
+    if (Engine.put(meta, html, curE ? 'update' : 'create')) { if (curE) upd++; else add++; }
+  }
+  if (Array.isArray(p.trash)) p.trash.forEach(t => {
+    if (!t || !t.meta || typeof t.html !== 'string') return;
+    const mm = normMeta(t.meta);
+    if (mm.date < from || mm.date > to) return;
+    if (Engine.trash[mm.id] || Engine.entries.has(mm.id)) return;
+    Engine.trash[mm.id] = { p: Engine.pack(mm, sanitize(t.html)), at: +t.at || Date.now() };
+  });
+  saveJ(K.trash, Engine.trash);
+  if (Array.isArray(p.todos)) p.todos.forEach(t => { if (t && typeof t.id === 'string' && typeof t.text === 'string' && !S.todos.some(x => x.id === t.id)) S.todos.push({ id: t.id.slice(0, 24), text: t.text.slice(0, 120), done: !!t.done }); });
+  if (Array.isArray(p.stickers)) p.stickers.forEach(s => { if (typeof s === 'string' && IMG_RE.test(s) && !S.stickers.includes(s) && S.stickers.length < 30) S.stickers.push(s); });
+  if (p.custom && typeof p.custom === 'object') {
+    const imported = {};
+    SKIN_VARS.forEach(([k, _, d]) => {
+      const v = p.custom[k];
+      imported[k] = (typeof v === 'string' && /^#[0-9a-fA-F]{6}$/.test(v)) ? v : d;
+    });
+    S.customSkin = imported;
+  }
+  if (p.skin === 'custom' && S.customSkin) applySkin('custom');
+  else if (SKINS.some(s => s[0] === p.skin)) applySkin(p.skin);
+  saveJ(K.todos, S.todos); saveJ(K.stk, S.stickers);
+  return { add, upd, skip, out };
+}
+function importOptions(payload, fname) {
+  return new Promise(res => {
+    const list = (payload.entries || []).filter(e => e && e.meta && /^\d{4}-\d{2}-\d{2}$/.test(e.meta.date));
+    const dates = list.map(e => e.meta.date).sort();
+    const minD = dates[0] || ymd(new Date()), maxD = dates[dates.length - 1] || minD;
+    const trN = (payload.trash || []).length;
+    const m = modal(`<h3 class="h2">导入设置</h3>
+      <p class="sub mt-1">「${esc(fname)}」共 ${list.length} 篇日记${trN ? ` · 回收站 ${trN} 项` : ''}，请选择要导入的日期范围。</p>
+      <div class="mt-4 grid grid-cols-2 gap-3">
+        <label class="block"><span class="sub">起始日期</span><input type="date" id="ipFrom" class="field mt-1 w-full" value="${minD}" min="${minD}" max="${maxD}"></label>
+        <label class="block"><span class="sub">结束日期</span><input type="date" id="ipTo" class="field mt-1 w-full" value="${maxD}" min="${minD}" max="${maxD}"></label>
+      </div>
+      <div class="mt-2 flex flex-wrap gap-1.5">
+        <button class="btn btn-ghost !px-3 !py-1 !text-xs" data-quick="all">全部</button>
+        <button class="btn btn-ghost !px-3 !py-1 !text-xs" data-quick="365">近一年</button>
+        <button class="btn btn-ghost !px-3 !py-1 !text-xs" data-quick="30">近一月</button>
+        <button class="btn btn-ghost !px-3 !py-1 !text-xs" data-quick="7">近一周</button>
+      </div>
+      <p id="ipPreview" class="mt-3 rounded-2xl border border-line/70 bg-paper/50 p-3 text-sm leading-6"></p>
+      <div class="mt-4 flex justify-end gap-2"><button class="btn btn-ghost" data-close>取消</button><button class="btn btn-primary" id="ipOk">开始导入</button></div>`, { onClose: () => res(null) });
+    const calc = () => {
+      const from = $('#ipFrom', m.el).value || minD, to = $('#ipTo', m.el).value || maxD;
+      let add = 0, upd = 0, skip = 0, out = 0;
+      list.forEach(e => {
+        if (e.meta.date < from || e.meta.date > to) { out++; return; }
+        const curE = Engine.entries.get(e.meta.id);
+        if (!curE) add++; else if ((+e.meta.updated || 0) > (+curE.meta.updated || 0)) upd++; else skip++;
+      });
+      $('#ipPreview', m.el).innerHTML = `范围内 <b>${list.length - out}</b> 篇：新增 <b>${add}</b> · 更新 <b>${upd}</b> · 跳过 <b>${skip}</b>${out ? ` · 范围外 <b>${out}</b>` : ''}`;
+      return { from, to };
+    };
+    ['ipFrom', 'ipTo'].forEach(id => $('#' + id, m.el).addEventListener('change', calc));
+    m.el.addEventListener('click', ev => {
+      const q = ev.target.closest('[data-quick]'); if (!q) return;
+      const v = q.dataset.quick;
+      let f = minD, t = maxD;
+      if (v !== 'all') { const d = parseYmd(maxD); d.setDate(d.getDate() - +v); const s = ymd(d); f = s > minD ? s : minD; }
+      $('#ipFrom', m.el).value = f; $('#ipTo', m.el).value = t; calc();
+    });
+    $('#ipOk', m.el).onclick = () => { const o = calc(); res(o); m.close(); };
+    calc();
+  });
+}
+async function importLoog(file) {
+  const buf = await file.arrayBuffer(); const pw = await askPw('输入备份密码', `正在读取「${file.name}」`, false); if (!pw) return;
+  toast('正在校验与解密…');
+  let payload;
+  try { payload = await LF.open(buf, pw); } catch (e) { toast(e.message || '导入失败'); return; }
+  if (!payload || payload.app !== 'loog' || !Array.isArray(payload.entries)) { toast('这不是有效的 Loog 备份'); return; }
+  const opt = payload.entries.length ? await importOptions(payload, file.name) : {};
+  if (opt === null) return;
+  try {
+    const r = applyImport(payload, opt);
+    const skipped = r.skip + r.out;
+    toast(`导入完成：新增 ${r.add} · 更新 ${r.upd}${skipped ? ` · 跳过 ${skipped}` : ''} 🌿`);
+    go(cur);
+  } catch (e) { toast(e.message || '导入失败'); }
+}
+
+/* ---------- 事件委托 ---------- */
+document.addEventListener('click', async e => {
+  const g = e.target.closest('[data-go]'); if (g) { go(g.dataset.go); return; }
+  if (!e.target.closest('#wTbWrap') && cur === 'write') closePops();
+  const a = e.target.closest('[data-act],[data-cmd],[data-pop]'); if (!a) return;
+  if (a.dataset.cmd) {
+    ensureSel();
+    const cmd = a.dataset.cmd;
+    try {
+      if (cmd === 'hilite') {
+        document.execCommand('styleWithCSS', false, true);
+        document.execCommand('hiliteColor', false, 'rgb(236,223,180)');
+        document.execCommand('styleWithCSS', false, false);
+      } else if (cmd === 'removeFormat') {
+        document.execCommand('removeFormat', false, null);
+        document.execCommand('styleWithCSS', false, false);
+      } else {
+        document.execCommand('styleWithCSS', false, false);
+        document.execCommand(cmd, false, null);
+      }
+    } catch (err) {}
+    D.html = ed.innerHTML;
+    schedDraft();
+    return;
+  }
+  if (a.dataset.pop) { togglePop(a.dataset.pop); return; }
+  const act = a.dataset.act, id = a.dataset.id;
+  switch (act) {
+    case 'open-entry': openReader(id); break;
+    case 'write-today': go('write'); break;
+    case 'quote-attach': attachQuote(); break;
+    case 'quote-detach':
+      D.quote = null;
+      renderQuoteChip();
+      schedDraft();
+      toast('已移除附加的好句');
+      break;
+    case 'quote-next':
+      loadHitokoto(true).then(hk => {
+        typeQuote(hk);
+        if (cur === 'home') {
+          const heart = $('.quote-heart');
+          if (heart) heart.classList.toggle('attached', !!(D.quote && D.quote.text === hk.text));
+        }
+      });
+      break;
+    case 'capsule-open': { const all = [...Engine.entries.values()]; if (!all.length) { toast('先写下第一篇日记吧 🌱'); break; } const today = ymd(new Date()); let pool = all.filter(x => x.meta.date < today && x.meta.id !== S.capsule); if (!pool.length) pool = all.filter(x => x.meta.id !== S.capsule); if (!pool.length) pool = all; S.capsule = pool[Math.floor(Math.random() * pool.length)].meta.id; renderCapsule(); break; }
+    case 'todo-add': addTodo(); break;
+    case 'todo-toggle': { const t = S.todos.find(x => x.id === id); if (t) { t.done = !t.done; saveJ(K.todos, S.todos); renderTodo(); } break; }
+    case 'todo-del': S.todos = S.todos.filter(x => x.id !== id); saveJ(K.todos, S.todos); renderTodo(); break;
+    case 'todo-clear': S.todos = S.todos.filter(x => !x.done); saveJ(K.todos, S.todos); renderTodo(); break;
+    case 'weather': D.weather = D.weather === a.dataset.k ? '' : a.dataset.k; renderChips(); schedDraft(); break;
+    case 'mood': D.mood = D.mood === a.dataset.k ? '' : a.dataset.k; renderChips(); schedDraft(); break;
+    case 'tag-del': D.tags.splice(+a.dataset.i, 1); renderTags(); schedDraft(); break;
+    case 'emoji-ins': ensureSel(); document.execCommand('insertText', false, a.dataset.e); break;
+    case 'sticker-ins': { const s = S.stickers[+a.dataset.i]; if (s && IMG_RE.test(s)) { ensureSel(); document.execCommand('insertHTML', false, `<img src="${s}" alt="贴纸" class="stk">&nbsp;`); closePops(); } break; }
+    case 'doodle': closePops(); doodleModal(); break;
+    case 'focus': enterFocus(); break;
+    case 'save': saveEntry(); break;
+    case 'discard': if (await confirmDlg('放弃编辑？', '本次对这篇日记的未保存修改会被丢弃，原日记不受影响。', '放弃')) { resetEditor(); toast('已放弃编辑'); } break;
+    case 'tag-filter': S.filter.tag = S.filter.tag === a.dataset.t ? '' : a.dataset.t; renderList(); break;
+    case 'clear-filter': S.filter = { q: '', date: '', tag: '' }; renderList(); break;
+    case 'hm-mode': S.heat = a.dataset.m; renderStats(); break;
+    case 'hm-prev': case 'hm-next': { const k = act === 'hm-prev' ? -1 : 1; if (S.heat === 'year') S.year += k; else { S.month += k; if (S.month < 0) { S.month = 11; S.year--; } if (S.month > 11) { S.month = 0; S.year++; } } renderStats(); break; }
+    case 'hm-day': S.filter = { q: '', date: a.dataset.d, tag: '' }; go('list'); break;
+    case 'skin': applySkin(a.dataset.k); renderSettings(); break;
+    case 'skin-custom': customSkinModal(); break;
+    case 'hk-mode': {
+      S.hitokotoMode = a.dataset.m;
+      ls.set(K.hkmode, S.hitokotoMode);
+      if (S.hitokotoMode !== 'local') {
+        S.hitokoto = { text: '', from: '', uuid: '', fetchedAt: 0, source: 'local' };
+        loadHitokoto().then(hk => typeQuote(hk));
+      } else { S.quote = 0; }
+      renderSettings();
+      toast('每日一句来源已更新');
+      break;
+    }
+    case 'export-txt': exportTxt(); break;
+    case 'export-loog': exportLoog(); break;
+    case 'export-delta': exportDelta(); break;
+    case 'release-space': releaseModal('（请确认合并后的 .loog 已保存）'); break;
+    case 'import-loog': $('#impFile').click(); break;
+    case 'trash-restore': if (Engine.restoreTrash(id)) { toast('已恢复 🌿'); renderSettings(); } else toast('该条目已损坏，无法恢复'); break;
+    case 'trash-purge': if (await confirmDlg('彻底删除？', '删除后无法再找回。', '彻底删除', true)) { Engine.purgeTrash(id); renderSettings(); } break;
+    case 'trash-empty': if (await confirmDlg('清空回收站？', '所有已删除的日记将无法再找回。', '清空', true)) { Engine.trash = {}; saveJ(K.trash, Engine.trash); renderSettings(); } break;
+    case 'scan-all': {
+      const box = $('#scanResult'); if (!box) break;
+      box.innerHTML = '<div class="mt-3 sub">⏳ 正在逐篇校验「头 / 内容 / 校验尾」…</div>';
+      setTimeout(() => {
+        const r = Engine.scanAll();
+        Engine.damaged = r.bad.slice();
+        renderScanResult(r);
+        toast(r.bad.length ? `检出 ${r.bad.length} 篇异常` : '全部校验通过 ✓');
+      }, 180);
+      break;
+    }
+    case 'fix-entry': {
+      if (Engine.tryRepair(id)) { toast('已从历史记录修复 ✓'); if (cur === 'settings') renderSettings(); }
+      else toast('没有可用的历史记录，请清理', 'rose');
+      break;
+    }
+    case 'clean-entry': {
+      if (await confirmDlg('清理损坏条目？', '该条目无法读取，清理后将从本地删除。', '清理', true)) {
+        Engine.cleanOne(id); toast('已清理'); if (cur === 'settings') renderSettings();
+      }
+      break;
+    }
+    case 'clean-damaged': Engine.cleanDamaged(); renderSettings(); toast('已清理'); break;
+    case 'restore-version': {
+      if (Engine.restoreVersion(id, +a.dataset.t)) {
+        toast('已恢复到所选版本 🕘');
+        renderVersionList(id);
+        if (cur === 'list' || cur === 'home') render[cur]();
+      } else toast('恢复失败', 'rose');
+      break;
+    }
+    case 'wipe': if (await confirmDlg('清空全部本地数据？', '所有日记、草稿、回收站与历史版本都会被删除。建议先导出 .loog 备份。', '全部清空', true)) { try { Object.keys(localStorage).filter(k => k.startsWith('loog:') && k !== K.seed).forEach(k => localStorage.removeItem(k)); } catch {} Engine.entries.clear(); Engine.ids = []; Engine.ops = []; Engine.trash = {}; Engine.damaged = []; S.todos = []; S.stickers = []; S.customSkin = null; D = newDraft(); toast('已清空'); go(cur); } break;
+  }
+});
+function addTodo() { const i = $('#todoInput'); const v = i.value.trim().slice(0, 120); if (!v) return; S.todos.unshift({ id: uid(), text: v, done: false }); saveJ(K.todos, S.todos); i.value = ''; renderTodo(); i.focus(); }
+document.addEventListener('keydown', e => {
+  if (e.target.id === 'todoInput' && e.key === 'Enter') { e.preventDefault(); addTodo(); return; }
+  if (e.key === 'Escape') { if (modals.length) modals[modals.length - 1].close(); else if (document.body.classList.contains('focus-mode')) exitFocus(); else closePops && cur === 'write' && closePops(); }
+});
+$('#exitFocus').addEventListener('click', exitFocus);
+$('#impFile').addEventListener('change', e => { const f = e.target.files[0]; e.target.value = ''; if (f) importLoog(f); });
+window.addEventListener('hashchange', () => { const p = location.hash.slice(1); if (p && p !== cur) go(p); });
+window.addEventListener('beforeunload', () => { if (cur === 'write') flushDraft(); });
+document.addEventListener('visibilitychange', () => { if (document.hidden && cur === 'write') flushDraft(); });
+window.addEventListener('storage', e => { if (e.key && e.key.startsWith('loog:e:')) { } });
+
+render.home = renderHome; render.list = renderList; render.stats = renderStats; render.settings = renderSettings;
+
+/* ---------- 启动 ---------- */
+(function boot() {
+  const set = loadJ(K.set, {});
+  if (set.custom && typeof set.custom === 'object') {
+    const restored = {};
+    SKIN_VARS.forEach(([k, _, d]) => {
+      const v = set.custom[k];
+      restored[k] = (typeof v === 'string' && /^#[0-9a-fA-F]{6}$/.test(v)) ? v : d;
+    });
+    S.customSkin = restored;
+  }
+  if (set.skin === 'custom') {
+    if (!S.customSkin) S.customSkin = getDefaultCustom();
+    applySkin('custom');
+  } else if (SKINS.some(s => s[0] === set.skin)) {
+    applySkin(set.skin);
+  }
+  const hk = loadJ(K.hitokoto, null);
+  if (hk && typeof hk.text === 'string' && hk.text) S.hitokoto = { ...S.hitokoto, ...hk };
+  const hkMode = ls.get(K.hkmode);
+  if (['online','bundle','local'].includes(hkMode)) S.hitokotoMode = hkMode;
+  Engine.init();
+  S.todos = loadJ(K.todos, []).filter(t => t && typeof t.id === 'string' && typeof t.text === 'string');
+  S.stickers = loadJ(K.stk, []).filter(s => typeof s === 'string' && IMG_RE.test(s));
+  const dr = loadJ(K.draft, null);
+  if (dr && typeof dr === 'object') {
+    D = { ...newDraft(),
+      editingId: typeof dr.editingId === 'string' ? dr.editingId : null,
+      date: /^\d{4}-\d{2}-\d{2}$/.test(dr.date) ? dr.date : ymd(new Date()),
+      title: String(dr.title || '').slice(0, 100),
+      html: sanitize(dr.html || ''),
+      weather: WMAP[dr.weather] ? dr.weather : '',
+      mood: MMAP[dr.mood] ? dr.mood : '',
+      tags: Array.isArray(dr.tags) ? dr.tags.filter(t => typeof t === 'string').slice(0, 8) : [],
+      quote: normQuote(dr.quote)
+    };
+  }
+  buildNav(); buildWrite();
+  go(location.hash.slice(1) || 'home');
+  loadHitokoto();
+  if (Engine.repaired) setTimeout(() => toast(`已从历史记录自动修复 ${Engine.repaired} 篇受损日记 🛠️`), 800);
+})();
+})();
+</script>
+</body>
+</html>
